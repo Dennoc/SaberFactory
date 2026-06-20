@@ -10,11 +10,16 @@
 </p>
 
 <p align="center">
-    <h4 align="center">A fork that revives the SaberFactory mod by ToniMacaroni</h4>
+    <h4 align="center">A highly customizable saber mod for Beat Saber</h4>
 </p>
 
 </br>
 </br>
+
+|   |  |
+| ------------- | ------------- |
+| Mod Download  | **[Latest Version](https://github.com/Dennoo11/SaberFactory/releases)**  |
+| Website  | **[SaberFactory.com](https://saberfactory.com)**  |
 
 
 ## What is Saber Factory?
@@ -27,13 +32,23 @@ Change the shape, shaders, material properties, textures and more of parts and s
 **You can use and customize both parts and custom sabers in saber factory**
 
 ## How do I install it
-1) Download the first zip from [Here](https://github.com/Dennoo11/SaberFactory/releases)
+1) Download the first zip from [Here](https://github.com/ToniMacaroni/SaberFactoryV2/releases)
 2) Unpack it in your Beat Saber directory
 
 ## I want to create a saber
 I highly recommend watching [this tutorial](https://www.youtube.com/watch?v=YqpcNTpzW4A).  
 The unity project can be found [here](https://github.com/ToniMacaroni/AssetCreationProject)
 
+## I have made a map and want it to use a specific saber
+You can add a "_customSaber" prop to your beatmap data
+that tells Saber Factory to use a specific saber for this map like this:
+```
+"_customData": {
+    "_customSaber": "Plasma Katana"
+}
+```
+Make sure to use the actual name of the saber not the file name.
+Best is to look in-game at the saber to see what the actual name is.
 
 ## I have made a noodle map where the player moves and I want the trails to not stretch
 By default if the player moves in a noodle map the trail behaves like a real trail and becomes longer the faster the player moves.
@@ -60,3 +75,27 @@ You can enable "relative movement of the trail to the player" by using a settabl
       ]
 ```
 The settings group is `_saberFactory` and the field is `_relativeTrailMode` (which can be either `true` or `false`)
+
+## I made a mod that needs to create some sabers in a song
+If you want to create sabers in a song see https://github.com/Auros/SiraUtil#sabers
+
+## I made a mod that needs to create some sabers in the menu (or other place after the menu)
+If you want to create sabers in the menu (like [Custom Menu Pointers](https://github.com/dawnvt/CustomMenuPointers/) does)  
+you can request the `MenuSaberProvider` and create sabers with it like this:
+
+```csharp
+public class MyMenuManager : IInitializable
+{
+    private readonly MenuSaberProvider _menuSaberProvider;
+
+    public MyMenuManager(MenuSaberProvider menuSaberProvider)
+    {
+        _menuSaberProvider = menuSaberProvider;
+    }
+
+    public async void Initialize()
+    {
+        var myLeftSaber = await _menuSaberProvider.CreateSaber(parent:null, saberType:SaberType.SaberA, color:Color.red, createTrail:true);
+    }
+}
+```
