@@ -35,7 +35,7 @@ namespace SaberFactory.Helpers
         {
             GizmoDrawer.Init();
 
-            var shader = await _assetLoader.LoadAsset<Shader>("sh_sfglow_doublesided.shader");
+            var shader = await _assetLoader.LoadAsset<Shader>("sh_urki_glow_doublesided.shader");
             _gizmoMaterial = new Material(shader);
 
             PositionMesh = await LoadMesh("PositionGizmo");
