@@ -42,7 +42,7 @@ namespace SaberFactory.Editor
             }
 
             _instance.SetActive(true);
-            _animator.speed = 0.2f;
+            _animator.speed = 1.0f;
             _animator.Play("Anim");
 
             await Task.Delay(2800);
