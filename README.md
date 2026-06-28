@@ -35,7 +35,7 @@ Change the shape, shaders, material properties, textures and more of parts and s
 
 ## I have a saber that's broken and it appears in the left eye 
 Beat Saber 1.30+ switch to Single-Pass Instanced (SPI) which broke most sabers since they were compiled in Single-Pass Stero (SPS)
-this was removed in Unity 2020.1+ you will have to get [AssetBundleLoadingTools](https://beatmods.com/mods/306) and enable Muilt-Pass in the mods.
+this was removed in Unity 2020.1+ you will have to get [AssetBundleLoadingTools](https://beatmods.com/mods/306) and enable Muilt-Pass in the mod settings.
 
 ## I want to create a saber
 I highly recommend watching [this tutorial](https://www.youtube.com/watch?v=YqpcNTpzW4A).  
