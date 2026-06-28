@@ -1,5 +1,5 @@
 <p align="center">
-    <h1 align="center">Saber Factory (Unsure what to put here lol)</h1>
+    <h1 align="center">Saber Factory</h1>
 </p>
 
 <p align="center">
@@ -7,6 +7,9 @@
         <img src="https://img.shields.io/github/downloads/Dennoo11/SaberFactory/total" /></a>
     <a href="https://github.com/ToniMacaroni/SaberFactory/releases" alt="latest version">
         <img src="https://img.shields.io/github/v/tag/Dennoo11/SaberFactory?label=version" /></a>
+</p>
+<p align="center">
+    <h4 align="center">A highly customizable saber mod for Beat Saber</h4>
 </p>
 
 <p align="center">
@@ -29,6 +32,10 @@ Change the shape, shaders, material properties, textures and more of parts and s
 ## How do I install it
 1) Download the first zip from [Here](https://github.com/Dennoo11/SaberFactory/releases)
 2) Unpack it in your Beat Saber directory
+
+## I have a saber that's broken and it appears in the left eye 
+Beat Saber 1.30+ switch to Single-Pass Instanced (SPI) which broke most sabers since they were compiled in Single-Pass Stero (SPS)
+this was removed in Unity 2020.1+ you will have to get [AssetBundleLoadingTools](https://beatmods.com/mods/306) and enable Muilt-Pass in the mods.
 
 ## I want to create a saber
 I highly recommend watching [this tutorial](https://www.youtube.com/watch?v=YqpcNTpzW4A).  
