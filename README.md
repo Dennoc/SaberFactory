@@ -37,6 +37,9 @@ Change the shape, shaders, material properties, textures and more of parts and s
 Beat Saber 1.30+ switch to Single-Pass Instanced (SPI) which broke most sabers since they were compiled in Single-Pass Stero (SPS)
 this was removed in Unity 2020.1+ you will have to get [AssetBundleLoadingTools](https://beatmods.com/mods/306) and enable Muilt-Pass in the mod settings.
 
+**For Saber Modelers**
+if you want to miragte your saber to Unity 2021+ Single-Pass Instanced (SPI) you can read more here https://bsmg.wiki/models/shader-migration.html
+
 ## I want to create a saber
 I highly recommend watching [this tutorial](https://www.youtube.com/watch?v=YqpcNTpzW4A).  
 The unity project can be found [here](https://github.com/ToniMacaroni/AssetCreationProject)
