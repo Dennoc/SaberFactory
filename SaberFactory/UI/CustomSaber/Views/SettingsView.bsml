@@ -32,6 +32,14 @@
                     icon='SaberFactory.Resources.Icons.discord.png'
                     hover-hint='Original Saber Factory Github'
                     skew='0' show-line='false' normal-color='#00000000' hovered-color='#00b6ff40' use-gradient='false'/>
+			<sui.icon-button
+                    pad='1'
+                    pref-width='15'
+                    preferred-height='15'
+                    on-click='profiletwo-clicked'
+                    icon='SaberFactory.Resources.Icons.profiletwo.png'
+                    hover-hint='New Maintainer Denno'
+                    skew='0' show-line='false' normal-color='#00000000' hovered-color='#00b6ff40' use-gradient='false'/>
             <sui.icon-button
                     id='github-button'
                     active='false'
