@@ -31,11 +31,17 @@ namespace SaberFactory
 
             var pluginConfig = conf.Generated<PluginConfig>();
 
-            if (!await LoadCsDescriptors()) return;
+            if (!await LoadCsDescriptors())
+            {
+                return;
+            }
 
-            zenjector.OnApp<PluginAppInstaller>().WithParameters(logger, pluginConfig, metadata);
-            zenjector.OnMenu<PluginMenuInstaller>();
-            zenjector.OnGame<PluginGameInstaller>(false);
+            zenjector.UseLogger(logger);
+            zenjector.UseHttpService();
+            //zenjector.Expose<ObstacleSaberSparkleEffectManager>("Gameplay");
+            zenjector.Install<PluginAppInstaller>(Location.App, logger, pluginConfig, metadata);
+            zenjector.Install<PluginMenuInstaller>(Location.Menu);
+            zenjector.Install<PluginGameInstaller>(Location.Player | Location.MultiPlayer);
         }
 
         [OnEnable]
@@ -47,7 +53,7 @@ namespace SaberFactory
         [OnDisable]
         public void OnDisable()
         {
-            _harmony.UnpatchAll(HarmonyId);
+            _harmony.UnpatchSelf();
         }
 
         /// <summary>

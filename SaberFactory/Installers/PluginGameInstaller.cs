@@ -1,11 +1,15 @@
 ﻿//#define TEST_TRAIL
 
 
+using ModestTree;
 using SaberFactory.Configuration;
 using SaberFactory.Game;
 using SaberFactory.Helpers;
+using SaberFactory.Misc;
 using SaberFactory.Models;
 using SiraUtil.Interfaces;
+using SiraUtil.Sabers;
+using UnityEngine;
 using Zenject;
 
 namespace SaberFactory.Installers
@@ -15,22 +19,22 @@ namespace SaberFactory.Installers
         public override void InstallBindings()
         {
             var config = Container.Resolve<PluginConfig>();
-            if (!config.Enabled || Container.Resolve<SaberSet>().IsEmpty) return;
-
-            if (Container.HasBinding<GameplayCoreSceneSetupData>())
+            if (!config.Enabled || Container.Resolve<SaberSet>().IsEmpty)
             {
-                var sceneSetupData = Container.Resolve<GameplayCoreSceneSetupData>();
-                var beatmapData = sceneSetupData.difficultyBeatmap.beatmapData;
-                Container.Bind<BeatmapData>().WithId("beatmapdata").FromInstance(beatmapData);
-                var lastNoteTime = beatmapData.GetLastNoteTime();
-                Container.Bind<float>().WithId("LastNoteId").FromInstance(lastNoteTime);
-                Container.BindInterfacesAndSelfTo<EventPlayer>().AsTransient();
+                return;
             }
 
+            Container.BindInterfacesAndSelfTo<EventPlayer>().AsTransient();
+
             //Container.BindInterfacesAndSelfTo<AFHandler>().AsSingle();
+
+            if (!Container.HasBinding<ObstacleSaberSparkleEffectManager>())
+            {
+                Container.Bind<ObstacleSaberSparkleEffectManager>().FromMethod(ObstanceSaberSparkleEffectManagerGetter).AsSingle();
+            }
+
             Container.BindInterfacesAndSelfTo<GameSaberSetup>().AsSingle();
-            //Container.Bind<IModelProvider>().To<SFSaberProvider>().AsSingle();
-            Container.BindInstance(SiraUtil.Sabers.SaberModelRegistration.Create<SfSaberModelController>());
+            Container.BindInstance(SaberModelRegistration.Create<SfSaberModelController>(300)).AsSingle();
 
 #if DEBUG && TEST_TRAIL
             if (Container.TryResolve<LaunchOptions>()?.FPFC ?? false)
@@ -39,6 +43,13 @@ namespace SaberFactory.Installers
                 Container.BindInterfacesAndSelfTo<SaberMovementTester>().AsSingle().WithArguments(testerInitData);
             }
 #endif
+        }
+
+        private ObstacleSaberSparkleEffectManager ObstanceSaberSparkleEffectManagerGetter(InjectContext ctx)
+        {
+            var playerSpaceConverter = Container.TryResolve<PlayerSpaceConvertor>();
+            Assert.IsNotNull(playerSpaceConverter, $"{nameof(playerSpaceConverter)} was null");
+            return playerSpaceConverter.GetComponentInChildren<ObstacleSaberSparkleEffectManager>();
         }
     }
 }

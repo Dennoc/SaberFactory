@@ -22,14 +22,14 @@ namespace SaberFactory.Helpers
         {
             var data = await Readers.ReadResourceAsync(resource);
             var content = Encoding.UTF8.GetString(data, 3, data.Length - 3);
-            return BSMLParser.instance.Parse(content, parent, host);
+            return BSMLParser.Instance.Parse(content, parent, host);
         }
 
         public static BSMLParserParams ParseFromResource(string resource, GameObject parent, object host)
         {
             var data = Readers.ReadResource(resource);
             var content = Encoding.UTF8.GetString(data, 3, data.Length - 3);
-            return BSMLParser.instance.Parse(content, parent, host);
+            return BSMLParser.Instance.Parse(content, parent, host);
         }
 
         public static void SetSkew(this ImageView image, float skew)

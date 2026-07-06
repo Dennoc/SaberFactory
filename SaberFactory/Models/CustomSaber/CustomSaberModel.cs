@@ -52,7 +52,7 @@ namespace SaberFactory.Models.CustomSaber
         private bool? _hasTrail;
 
         private TrailModel _trailModel;
-
+        [Inject] private readonly PluginDirectories _pluginDirectories = null;
         public CustomSaberModel(StoreAsset storeAsset) : base(storeAsset)
         {
             PropertyBlock = new CustomSaberPropertyBlock();
@@ -62,8 +62,7 @@ namespace SaberFactory.Models.CustomSaber
         {
             if (!HasTrail) return;
             var trailModel = TrailModel;
-
-            var path = PathTools.ToFullPath(StoreAsset.RelativePath) + ".trail";
+            var path = _pluginDirectories.Cache.GetFile(StoreAsset.NameWithoutExtension + ".trail").FullName;
             var trail = QuickSave.LoadObject<TrailProportions>(path);
             if (trail == null) return;
             trailModel.Length = trail.Length;
