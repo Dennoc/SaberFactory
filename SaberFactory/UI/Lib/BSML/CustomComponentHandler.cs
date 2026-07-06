@@ -7,6 +7,7 @@ using BeatSaberMarkupLanguage.Macros;
 using BeatSaberMarkupLanguage.Tags;
 using BeatSaberMarkupLanguage.TypeHandlers;
 using SaberFactory.UI.Lib.BSML.Tags;
+using SiraUtil.Logging;
 using SiraUtil.Tools;
 using Zenject;
 
@@ -25,7 +26,7 @@ namespace SaberFactory.UI.Lib.BSML
             _logger = logger;
             _popupFactory = popupFactory;
             _customUiComponentFactory = customUiComponentFactory;
-            RegisterAll(BSMLParser.instance);
+            RegisterAll(BSMLParser.Instance);
         }
 
         public void Initialize()

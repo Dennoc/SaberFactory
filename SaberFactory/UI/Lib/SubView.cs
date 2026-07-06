@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BeatSaberMarkupLanguage.Parser;
 using JetBrains.Annotations;
 using SaberFactory.Helpers;
+using SiraUtil.Logging;
 using SiraUtil.Tools;
 using UnityEngine;
 using Zenject;

@@ -4,6 +4,7 @@ using HMUI;
 using IPA.Utilities;
 using SaberFactory.Helpers;
 using SaberFactory.UI.Lib;
+using SiraUtil.Logging;
 using SiraUtil.Tools;
 using UnityEngine;
 using UnityEngine.UI;

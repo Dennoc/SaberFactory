@@ -2,7 +2,7 @@
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Tags;
 using HMUI;
-using Polyglot;
+using BGLib.Polyglot;
 using SaberFactory.Helpers;
 using TMPro;
 using UnityEngine;
@@ -36,7 +36,7 @@ namespace SaberFactory.UI.Lib.BSML.Tags
 
             var textMesh = button.GetComponentInChildren<TextMeshProUGUI>();
             textMesh.richText = true;
-            externalComponents.components.Add(textMesh);
+            externalComponents.Components.Add(textMesh);
 
             Object.Destroy(button.transform.Find("Content").GetComponent<LayoutElement>());
 
@@ -67,7 +67,7 @@ namespace SaberFactory.UI.Lib.BSML.Tags
 
             var stackLayoutGroup = button.GetComponentInChildren<LayoutGroup>();
             if (stackLayoutGroup != null)
-                externalComponents.components.Add(stackLayoutGroup);
+                externalComponents.Components.Add(stackLayoutGroup);
 
             if (!button.gameObject.activeSelf) button.gameObject.SetActive(true);
 
