@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
 using SaberFactory.Helpers;
+using UnityEngine;
 using Zenject;
 
 namespace SaberFactory.Configuration
@@ -20,6 +21,8 @@ namespace SaberFactory.Configuration
 
         private readonly Dictionary<PropertyInfo, object> _originalValues = new Dictionary<PropertyInfo, object>();
 
+        private bool _didLoadingFail;
+
         protected ConfigBase(PluginDirectories pluginDirs, string fileName)
         {
             ConfigFile = pluginDirs.SaberFactoryDir.GetFile(fileName);
@@ -27,27 +30,52 @@ namespace SaberFactory.Configuration
 
         public void Dispose()
         {
-            if (SaveOnDispose) Save();
+            // if loading failed, we don't want to put the original values back
+            // let the user fix the config file
+            if (SaveOnDispose && !_didLoadingFail)
+            {
+                Save();
+            }
         }
 
         public void Initialize()
         {
             // store original values for reverting feature
             foreach (var propertyInfo in GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            {
                 _originalValues.Add(propertyInfo, propertyInfo.GetValue(this));
+            }
 
-            if (LoadOnInit) Load();
+            if (LoadOnInit)
+            {
+                Load();
+            }
         }
 
         public void Revert()
         {
-            foreach (var originalValue in _originalValues) originalValue.Key.SetValue(this, originalValue.Value);
+            foreach (var originalValue in _originalValues)
+            {
+                originalValue.Key.SetValue(this, originalValue.Value);
+            }
         }
 
         public void Load()
         {
-            if (!Exists) return;
-            JsonConvert.PopulateObject(ConfigFile.ReadText(), this);
+            if (!Exists)
+            {
+                return;
+            }
+
+            try
+            {
+                JsonConvert.PopulateObject(ConfigFile.ReadText(), this);
+            }
+            catch (Exception e)
+            {
+                _didLoadingFail = true;
+                Debug.LogError($"[Saber Factory Configs] Failed to load config file {ConfigFile.Name}");
+            }
         }
 
         public void Save()
