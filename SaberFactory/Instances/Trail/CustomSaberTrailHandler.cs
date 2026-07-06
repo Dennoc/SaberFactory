@@ -1,23 +1,27 @@
 ﻿using CustomSaber;
+using SaberFactory.Configuration;
 using SaberFactory.Helpers;
 using UnityEngine;
 
 namespace SaberFactory.Instances.Trail
 {
+    /// <summary>
+    /// Used for secondary trails
+    /// </summary>
     internal class CustomSaberTrailHandler
     {
-        public AltTrail TrailInstance { get; protected set; }
+        public SFTrail TrailInstance { get; protected set; }
 
         private readonly CustomTrail _customTrail;
         private bool _canColorMaterial;
 
         public CustomSaberTrailHandler(GameObject gameobject, CustomTrail customTrail)
         {
-            TrailInstance = gameobject.AddComponent<AltTrail>();
+            TrailInstance = gameobject.AddComponent<SFTrail>();
             _customTrail = customTrail;
         }
 
-        public void CreateTrail(bool editor)
+        public void CreateTrail(TrailConfig trailConfig, bool editor)
         {
             if (_customTrail.PointStart == null || _customTrail.PointEnd == null)
             {
@@ -25,7 +29,10 @@ namespace SaberFactory.Instances.Trail
                 return;
             }
 
-            if (_customTrail.Length < 1) return;
+            if (_customTrail.Length < 1)
+            {
+                return;
+            }
 
             var trailInitData = new TrailInitData
             {
@@ -45,27 +52,10 @@ namespace SaberFactory.Instances.Trail
                 editor
             );
 
-            _canColorMaterial = IsMaterialColorable(_customTrail.TrailMaterial);
-        }
-
-        private bool IsMaterialColorable(Material material)
-        {
-            if (material is null || !material.HasProperty(MaterialProperties.MainColor)) return false;
-
-            if (material.TryGetFloat(MaterialProperties.CustomColors, out var val))
+            if (!trailConfig.OnlyUseVertexColor)
             {
-                if (val > 0) return true;
+                _canColorMaterial = MaterialHelpers.IsMaterialColorable(_customTrail.TrailMaterial);
             }
-            else if (material.TryGetFloat(MaterialProperties.Glow, out val) && val > 0)
-            {
-                return true;
-            }
-            else if (material.TryGetFloat(MaterialProperties.Bloom, out val) && val > 0)
-            {
-                return true;
-            }
-
-            return false;
         }
 
         public void DestroyTrail()
@@ -75,9 +65,15 @@ namespace SaberFactory.Instances.Trail
 
         public void SetColor(Color color)
         {
-            if (TrailInstance is { }) TrailInstance.Color = color;
+            if (TrailInstance is { })
+            {
+                TrailInstance.Color = color;
+            }
 
-            if (_canColorMaterial) _customTrail.TrailMaterial.SetMainColor(color);
+            if (_canColorMaterial)
+            {
+                TrailInstance.SetMaterialBlock(MaterialHelpers.ColorBlock(color));
+            }
         }
     }
 }

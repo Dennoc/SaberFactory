@@ -9,7 +9,8 @@ namespace SaberFactory.Misc
     {
         public const int BlockSize = 108;
 
-        public Mesh MyMesh => _meshFilter?.sharedMesh;
+        public Mesh MyMesh => _meshFilter != null ? _meshFilter.sharedMesh : null;
+        public MeshRenderer MeshRenderer;
 
         public float BoundsScheduleTime = 1f;
         public bool ColorChanged;
@@ -32,14 +33,14 @@ namespace SaberFactory.Misc
         protected Material _material;
         protected MeshFilter _meshFilter;
 
-        protected AltTrail _owner;
+        protected SFTrail _owner;
 
         protected bool _vertCountChanged;
 
         protected int _vertexTotal;
         protected int _vertexUsed;
 
-        public VertexPool(Material material, AltTrail owner)
+        public VertexPool(Material material, SFTrail owner)
         {
             _vertexTotal = _vertexUsed = 0;
             _vertCountChanged = false;
@@ -58,26 +59,28 @@ namespace SaberFactory.Misc
 
         public void SetMeshObjectActive(bool flag)
         {
-            if (_meshFilter == null) return;
+            if (_meshFilter == null)
+            {
+                return;
+            }
 
             _meshFilter.gameObject.SetActive(flag);
         }
 
-        private void CreateMeshObj(AltTrail owner, Material material)
+        private void CreateMeshObj(SFTrail owner, Material material)
         {
             _gameObject = new GameObject("SaberTrail");
             _gameObject.layer = owner.gameObject.layer;
             _meshFilter = _gameObject.AddComponent<MeshFilter>();
-            var meshrenderer = _gameObject.AddComponent<MeshRenderer>();
+            MeshRenderer = _gameObject.AddComponent<MeshRenderer>();
 
-            _gameObject.transform.position = Vector3.zero;
-            _gameObject.transform.rotation = Quaternion.identity;
+            _gameObject.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
 
-            meshrenderer.shadowCastingMode = ShadowCastingMode.Off;
-            meshrenderer.receiveShadows = false;
-            meshrenderer.sharedMaterial = material;
-            meshrenderer.sortingLayerName = _owner.SortingLayerName;
-            meshrenderer.sortingOrder = _owner.SortingOrder;
+            MeshRenderer.shadowCastingMode = ShadowCastingMode.Off;
+            MeshRenderer.receiveShadows = false;
+            MeshRenderer.sharedMaterial = material;
+            MeshRenderer.sortingLayerName = _owner.SortingLayerName;
+            MeshRenderer.sortingOrder = _owner.SortingOrder;
             _meshFilter.sharedMesh = new Mesh();
         }
 
@@ -91,8 +94,16 @@ namespace SaberFactory.Misc
         {
             var vertNeed = 0;
             var indexNeed = 0;
-            if (_vertexUsed + vcount >= _vertexTotal) vertNeed = (vcount / BlockSize + 1) * BlockSize;
-            if (_indexUsed + icount >= _indexTotal) indexNeed = (icount / BlockSize + 1) * BlockSize;
+            if (_vertexUsed + vcount >= _vertexTotal)
+            {
+                vertNeed = (vcount / BlockSize + 1) * BlockSize;
+            }
+
+            if (_indexUsed + icount >= _indexTotal)
+            {
+                indexNeed = (icount / BlockSize + 1) * BlockSize;
+            }
+
             _vertexUsed += vcount;
             _indexUsed += icount;
             if (vertNeed != 0 || indexNeed != 0)
@@ -147,15 +158,31 @@ namespace SaberFactory.Misc
 
         public void LateUpdate()
         {
-            if (MyMesh == null) return;
-            if (_vertCountChanged) MyMesh.Clear();
+            if (MyMesh == null)
+            {
+                return;
+            }
+
+            if (_vertCountChanged)
+            {
+                MyMesh.Clear();
+            }
 
             MyMesh.vertices = Vertices;
-            if (UVChanged) MyMesh.uv = UVs;
+            if (UVChanged)
+            {
+                MyMesh.uv = UVs;
+            }
 
-            if (ColorChanged) MyMesh.colors = Colors;
+            if (ColorChanged)
+            {
+                MyMesh.colors = Colors;
+            }
 
-            if (IndiceChanged) MyMesh.triangles = Indices;
+            if (IndiceChanged)
+            {
+                MyMesh.triangles = Indices;
+            }
 
             ElapsedTime += Time.deltaTime;
             if (ElapsedTime > BoundsScheduleTime || FirstUpdate)
@@ -165,7 +192,9 @@ namespace SaberFactory.Misc
             }
 
             if (ElapsedTime > BoundsScheduleTime)
+            {
                 FirstUpdate = false;
+            }
 
             _vertCountChanged = false;
             IndiceChanged = false;

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using BeatSaberMarkupLanguage;
 using SaberFactory.Loaders;
 using SaberFactory.UI;
+using SaberFactory.UI.Lib;
 using UnityEngine;
 
 namespace SaberFactory.Models
@@ -12,20 +12,44 @@ namespace SaberFactory.Models
     {
         public AssetTypeDefinition AssetTypeDefinition { get; private set; }
 
-        public Texture2D CoverTex => _coverTex ??= LoadTexture();
-        public Sprite CoverSprite => _coverSprite ??= LoadSprite();
-        public readonly AssetMetaPath AssetMetaPath;
+        public Texture2D CoverTex
+        {
+            get
+            {
+                if (_coverTex == null)
+                {
+                    _coverTex = LoadTexture();
+                }
+
+                return _coverTex;
+            }
+        }
+
+        public Sprite CoverSprite
+        {
+            get
+            {
+                if (_coverSprite == null)
+                {
+                    _coverSprite = LoadSprite();
+                }
+
+                return _coverSprite;
+            }
+        }
+
+        internal readonly AssetMetaPath AssetMetaPath;
 
         private byte[] _coverData;
         private Sprite _coverSprite;
         private Texture2D _coverTex;
 
-        public PreloadMetaData(AssetMetaPath assetMetaPath)
+        internal PreloadMetaData(AssetMetaPath assetMetaPath)
         {
             AssetMetaPath = assetMetaPath;
         }
 
-        public PreloadMetaData(AssetMetaPath assetMetaPath, ICustomListItem customListItem, AssetTypeDefinition assetTypeDefinition)
+        internal PreloadMetaData(AssetMetaPath assetMetaPath, ICustomListItem customListItem, AssetTypeDefinition assetTypeDefinition)
         {
             AssetMetaPath = assetMetaPath;
             AssetTypeDefinition = assetTypeDefinition;
@@ -44,23 +68,36 @@ namespace SaberFactory.Models
 
         public void SaveToFile()
         {
-            if (AssetMetaPath.HasMetaData) File.Delete(AssetMetaPath.MetaDataPath);
+            if (AssetMetaPath.HasMetaData)
+            {
+                File.Delete(AssetMetaPath.MetaDataPath);
+            }
 
-            var ser = new SerializableMeta();
-            ser.Name = ListName;
-            ser.Author = ListAuthor;
-            ser.AssetTypeDefinition = AssetTypeDefinition;
-
+            byte[] coverData = null;
             if (_coverSprite != null)
             {
                 var tex = _coverSprite.texture;
-                ser.CoverData = GetTextureData(tex);
+                coverData = GetTextureData(tex);
             }
 
-            var fs = new FileStream(AssetMetaPath.MetaDataPath, FileMode.Create, FileAccess.Write, FileShare.Write);
-            var formatter = new BinaryFormatter();
-            formatter.Serialize(fs, ser);
-            fs.Close();
+            using (var fs = new FileStream(AssetMetaPath.MetaDataPath, FileMode.Create, FileAccess.Write, FileShare.Write))
+            using (var writer = new BinaryWriter(fs))
+            {
+                writer.Write(ListName ?? string.Empty);
+                writer.Write(ListAuthor ?? string.Empty);
+                writer.Write((int)AssetTypeDefinition.AssetType);
+                writer.Write((int)AssetTypeDefinition.AssetSubType);
+
+                if (coverData != null)
+                {
+                    writer.Write(coverData.Length);
+                    writer.Write(coverData);
+                }
+                else
+                {
+                    writer.Write(0);
+                }
+            }
         }
 
         public void LoadFromFile()
@@ -70,15 +107,18 @@ namespace SaberFactory.Models
 
         public void LoadFromFile(string path)
         {
-            var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var formatter = new BinaryFormatter();
-            var ser = (SerializableMeta)formatter.Deserialize(fs);
-            fs.Close();
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var reader = new BinaryReader(fs))
+            {
+                ListName = reader.ReadString();
+                ListAuthor = reader.ReadString();
+                var assetType = (EAssetType)reader.ReadInt32();
+                var assetSubType = (EAssetSubType)reader.ReadInt32();
+                AssetTypeDefinition = new AssetTypeDefinition(assetType, assetSubType);
 
-            ListName = ser.Name;
-            ListAuthor = ser.Author;
-            _coverData = ser.CoverData;
-            AssetTypeDefinition = ser.AssetTypeDefinition;
+                var coverLen = reader.ReadInt32();
+                _coverData = coverLen > 0 ? reader.ReadBytes(coverLen) : null;
+            }
 
             LoadSprite();
         }
@@ -123,15 +163,6 @@ namespace SaberFactory.Models
         private Sprite LoadSprite()
         {
             return CoverTex == null ? null : Utilities.LoadSpriteFromTexture(CoverTex);
-        }
-
-        [Serializable]
-        internal class SerializableMeta
-        {
-            public AssetTypeDefinition AssetTypeDefinition;
-            public string Author;
-            public byte[] CoverData;
-            public string Name;
         }
     }
 }
