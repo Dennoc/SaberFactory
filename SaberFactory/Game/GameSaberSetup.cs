@@ -59,27 +59,8 @@ namespace SaberFactory.Game
                 return;
             }
 
-            if (!_config.OverrideSongSaber) await SetupSongSaber();
+
         }
 
-        private async Task SetupSongSaber()
-        {
-            try
-            {
-                if (!_beatmapData.GetField("_customSaber", out var songSaber)) return;
-
-                var metaData = _mainAssetStore.GetAllMetaData(AssetTypeDefinition.CustomSaber);
-                var saber = metaData.FirstOrDefault(x => x.ListName == songSaber.ToString());
-                if (saber == null) return;
-
-                _saberSet.LeftSaber = new SaberModel(ESaberSlot.Left);
-                _saberSet.RightSaber = new SaberModel(ESaberSlot.Right);
-                await _saberSet.SetSaber(saber);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e.ToString());
-            }
-        }
     }
-}
+} 

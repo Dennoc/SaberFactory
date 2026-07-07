@@ -10,8 +10,7 @@
                       hover-hint='Enable events on the saber (like fc effects)'/>
             <checkbox text='Random Sabers' value='random-sabers' apply-on-change='true'
                       hover-hint='Choose a random saber on every song start'/>
-            <checkbox text='Override song saber' value='override-song-saber' apply-on-change='true'
-                      hover-hint='Use your own saber instead of the one dictated by the song'/>
+            
             <text text='More settings in "Beat Saber\UserData\Saber Factory.json"' align='Center' font-color='#ffffff60'></text>
         </vertical>
 

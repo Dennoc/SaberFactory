@@ -50,17 +50,6 @@ namespace SaberFactory.UI.CustomSaber.Views
             }
         }
 
-        [UIValue("override-song-saber")]
-        private bool OverrideSongSaber
-        {
-            get => _pluginConfig.OverrideSongSaber;
-            set
-            {
-                _pluginConfig.OverrideSongSaber = value;
-                OnPropertyChanged();
-            }
-        }
-
         [Inject] private readonly PluginConfig _pluginConfig = null;
         [Inject] private readonly PluginManager _pluginManager = null;
 

@@ -136,10 +136,14 @@ namespace SaberFactory.UI.CustomSaber.Popups
         {
             return type switch
             {
-                ShaderPropertyType.Float => obj => { material.SetFloat(propId, (float)obj); },
-                ShaderPropertyType.Range => obj => { material.SetFloat(propId, (float)obj); },
-                ShaderPropertyType.Color => obj => { material.SetColor(propId, (Color)obj); },
-                ShaderPropertyType.Texture => obj => { material.SetTexture(propId, (Texture2D)obj); },
+                ShaderPropertyType.Float => obj => { material.SetFloat(propId, (float)obj); }
+                ,
+                ShaderPropertyType.Range => obj => { material.SetFloat(propId, (float)obj); }
+                ,
+                ShaderPropertyType.Color => obj => { material.SetColor(propId, (Color)obj); }
+                ,
+                ShaderPropertyType.Texture => obj => { material.SetTexture(propId, (Texture2D)obj); }
+                ,
                 _ => null
             };
         }
