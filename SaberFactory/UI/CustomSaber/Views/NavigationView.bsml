@@ -18,7 +18,7 @@
                 on-selected='clicked-settings'
                 on-color='#000000dd'
                 off-color='#ffffff60'>
-            <text id='settings-notify-text' active='false' text='Update' font-size='3' align='TopGeoAligned' color='#5dc968'/>
+            <text id='settings-notify-text' active='false' text='Update' font-size='3' align='TopGeoAligned' color='#5dc968' raycast-target='false'/>
         </sui.nav-button>
     </vertical>
 
