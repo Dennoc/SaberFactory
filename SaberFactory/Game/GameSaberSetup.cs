@@ -1,9 +1,10 @@
+﻿using SaberFactory.Configuration;
+using SaberFactory.DataStore;
+using SaberFactory.Helpers;
+using SaberFactory.Models;
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SaberFactory.Configuration;
-using SaberFactory.DataStore;
-using SaberFactory.Models;
 using UnityEngine;
 using Zenject;
 
@@ -22,12 +23,12 @@ namespace SaberFactory.Game
         private readonly SaberSet _saberSet;
 
         private GameSaberSetup(PluginConfig config, SaberSet saberSet, MainAssetStore mainAssetStore,
-            [Inject(Id = "beatmapdata")] BeatmapData beatmapData)
+            IReadonlyBeatmapData beatmap)
         {
             _config = config;
             _saberSet = saberSet;
             _mainAssetStore = mainAssetStore;
-            _beatmapData = beatmapData;
+            _beatmapData = beatmap.CastChecked<BeatmapData>();
 
             _oldLeftSaberModel = _saberSet.LeftSaber;
             _oldRightSaberModel = _saberSet.RightSaber;
@@ -63,4 +64,4 @@ namespace SaberFactory.Game
         }
 
     }
-} 
+}  

@@ -43,6 +43,8 @@ namespace SaberFactory.Game
 
         private float _prevScore;
 
+        
+
         public void SetPartEventList(List<PartEvents> partEventsList, SaberType saberType)
         {
             _partEventsList = partEventsList;
