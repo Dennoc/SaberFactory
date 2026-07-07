@@ -22,7 +22,7 @@ namespace SaberFactory.UI.Lib.BSML.Tags
             Object.Destroy(button.GetComponent<HoverHint>());
             Object.Destroy(button.GetComponent<LocalizedHoverHint>());
             button.GetComponent<ButtonStaticAnimations>().TryDestroy();
-            button.gameObject.AddComponent<ExternalComponents>().components
+            button.gameObject.AddComponent<ExternalComponents>().Components
                 .Add(button.GetComponentsInChildren<LayoutGroup>().First(x => x.name == "Content"));
 
             var contentTransform = button.transform.Find("Content");

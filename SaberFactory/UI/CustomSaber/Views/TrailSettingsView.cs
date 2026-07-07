@@ -130,14 +130,14 @@ namespace SaberFactory.UI.CustomSaber.Views
             if (_instanceTrailData != null && _pluginConfig.ControlTrailWithThumbstick)
             {
                 _trailFloatLength = _instanceTrailData.Length;
-                _vrPlatformHelper.joystickWasNotCenteredThisFrameEvent += OnjoystickWasNotCenteredThisFrameEvent;
+               // _vrPlatformHelper.joystickWasNotCenteredThisFrameEvent += OnjoystickWasNotCenteredThisFrameEvent;
             }
         }
 
         public override void DidClose()
         {
             if (_instanceTrailData != null && _pluginConfig.ControlTrailWithThumbstick)
-                _vrPlatformHelper.joystickWasNotCenteredThisFrameEvent -= OnjoystickWasNotCenteredThisFrameEvent;
+               // _vrPlatformHelper.joystickWasNotCenteredThisFrameEvent -= OnjoystickWasNotCenteredThisFrameEvent;
 
             _editorInstanceManager.OnSaberInstanceCreated -= CreateTrail;
 

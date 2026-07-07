@@ -77,10 +77,10 @@ namespace SaberFactory.UI.CustomSaber.CustomComponents
             {
                 try
                 {
-                    var button = componentType.component as IconToggleButton;
+                    var button = componentType.Component as IconToggleButton;
 
-                    if (componentType.data.TryGetValue("onToggle", out var onToggle))
-                        if (parserParams.actions.TryGetValue(onToggle, out var onToggleAction))
+                    if (componentType.Data.TryGetValue("onToggle", out var onToggle))
+                        if (parserParams.Actions.TryGetValue(onToggle, out var onToggleAction))
                             button.OnStateChanged += val => { onToggleAction.Invoke(val); };
                     base.HandleType(componentType, parserParams);
                 }

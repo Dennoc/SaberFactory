@@ -48,29 +48,29 @@ namespace SaberFactory.UI.Lib.BSML
         public override void HandleType(BSMLParser.ComponentTypeWithData componentType, BSMLParserParams parserParams)
         {
             base.HandleType(componentType, parserParams);
-            var backgroundable = (Backgroundable)componentType.component;
+            var backgroundable = (Backgroundable)componentType.Component;
 
-            if (componentType.data.TryGetValue("custom_bg", out var customBg))
+            if (componentType.Data.TryGetValue("custom_bg", out var customBg))
             {
                 InitSprite();
                 var imageview = GetOrAddImageView(backgroundable);
                 if (imageview != null)
                 {
                     imageview.overrideSprite = _bgSprite;
-                    backgroundable.background = imageview;
+                    backgroundable.Background = imageview;
                 }
             }
 
-            if (componentType.data.TryGetValue("customColor", out var customColor)) TrySetBackgroundColor(backgroundable, customColor);
+            if (componentType.Data.TryGetValue("customColor", out var customColor)) TrySetBackgroundColor(backgroundable, customColor);
 
-            if (componentType.data.TryGetValue("border", out var borderAttr)) AddBorder(backgroundable.gameObject, borderAttr == "square");
+            if (componentType.Data.TryGetValue("border", out var borderAttr)) AddBorder(backgroundable.gameObject, borderAttr == "square");
 
-            if (componentType.data.TryGetValue("raycast", out var raycastAttr))
-                if (backgroundable.background != null)
-                    backgroundable.background.raycastTarget = bool.Parse(raycastAttr);
+            if (componentType.Data.TryGetValue("raycast", out var raycastAttr))
+                if (backgroundable.Background != null)
+                    backgroundable.Background.raycastTarget = bool.Parse(raycastAttr);
 
-            if (componentType.data.TryGetValue("skew", out var skew))
-                if (backgroundable.background is ImageView imageView)
+            if (componentType.Data.TryGetValue("skew", out var skew))
+                if (backgroundable.Background is ImageView imageView)
                     imageView.SetSkew(float.Parse(skew));
         }
 
@@ -153,7 +153,7 @@ namespace SaberFactory.UI.Lib.BSML
         public static void TrySetBackgroundColor(Backgroundable background, string colorStr)
         {
             if (!ThemeManager.GetColor(colorStr, out var color)) return;
-            background.background.color = color;
+            background.Background.color = color;
         }
     }
 }

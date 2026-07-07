@@ -18,7 +18,7 @@ namespace SaberFactory.UI.Lib.PropCells
             OnChangeCallback = data.ChangedCallback;
             _toggleSetting.Value = val;
             _toggleSetting.ReceiveValue();
-            _toggleSetting.text.text = data.Text;
+            _toggleSetting.Text = data.Text;
 
             if (ThemeManager.GetDefinedColor("prop-cell", out var bgColor))
             {

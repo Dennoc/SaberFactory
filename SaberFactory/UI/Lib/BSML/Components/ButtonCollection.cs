@@ -71,7 +71,7 @@ namespace SaberFactory.UI.Lib.BSML.Components
             public override void HandleType(BSMLParser.ComponentTypeWithData componentType, BSMLParserParams parserParams)
             {
                 base.HandleType(componentType, parserParams);
-                var buttonCollection = componentType.component as ButtonCollection;
+                var buttonCollection = componentType.Component as ButtonCollection;
                 buttonCollection.SetTexts(new[] { "t1", "t2", "t3" });
                 buttonCollection.parserParams = parserParams;
                 parserParams.AddEvent("post-parse", buttonCollection.Setup);

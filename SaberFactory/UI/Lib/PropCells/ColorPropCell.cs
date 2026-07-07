@@ -28,7 +28,7 @@ namespace SaberFactory.UI.Lib.PropCells
                 _backgroundImage.color = bgColor;
             }
 
-            var positioner = _colorSetting.modalColorPicker.gameObject.AddComponent<ModalPositioner>();
+            var positioner = _colorSetting.ModalColorPicker.gameObject.AddComponent<ModalPositioner>();
             positioner.SetPosition(new Vector2(11, 10));
         }
 

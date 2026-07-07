@@ -24,8 +24,8 @@ namespace SaberFactory.UI.CustomSaber.CustomComponents
             var content = new List<object>();
             foreach (var listItem in listItems) content.Add(new ListItem(listItem, listItem.ListName, listItem.ListAuthor, listItem.ListCover));
 
-            _customList.data = content;
-            _customList.tableView.ReloadData();
+            _customList.Data = content;
+            _customList.TableView.ReloadData();
         }
 
         public void SetHeader(string header)

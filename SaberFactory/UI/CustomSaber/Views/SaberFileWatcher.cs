@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using IPA.Utilities.Async;
 using UnityEngine;
 
-namespace SaberFactory.UI.CustomSaber.Views
+namespace SaberFactory
 {
     public class SaberFileWatcher
     {
@@ -25,26 +25,41 @@ namespace SaberFactory.UI.CustomSaber.Views
 
         public void Watch()
         {
-            if (_watcher is { }) StopWatching();
+            if (_watcher is { })
+            {
+                StopWatching();
+            }
 
-            _watcher = new FileSystemWatcher(_dir.FullName);
+            _watcher = new FileSystemWatcher(_dir.FullName, Filter);
 
-            _watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Attributes | NotifyFilters.LastAccess;  
+            _watcher.NotifyFilter = NotifyFilters.LastWrite;
 
-            _watcher.Changed += WatcherOnChanged;
+            _watcher.Changed += WatcherOnCreated;
 
-            _watcher.Filter = Filter;
             _watcher.IncludeSubdirectories = true;
             _watcher.EnableRaisingEvents = true;
 
             IsWatching = true;
-            
-            Debug.LogError($"Started watching in {_dir.FullName}");
         }
 
-        private void WatcherOnChanged(object sender, FileSystemEventArgs e)
+        private void WatcherOnCreated(object sender, FileSystemEventArgs e)
         {
-            HMMainThreadDispatcher.instance.Enqueue(Initiate(e.FullPath));
+            _ = Task.Factory.StartNew(async () =>
+            {
+                var seconds = 0f;
+                while (seconds < 10)
+                {
+                    if (File.Exists(e.FullPath))
+                    {
+                        await Task.Delay(500);
+                        OnSaberUpdate?.Invoke(e.FullPath);
+                        return;
+                    }
+
+                    await Task.Delay(500);
+                    seconds += 0.5f;
+                }
+            }, System.Threading.CancellationToken.None, TaskCreationOptions.None, UnityMainThreadTaskScheduler.Default);
         }
 
         private IEnumerator Initiate(string filename)
@@ -66,15 +81,16 @@ namespace SaberFactory.UI.CustomSaber.Views
 
         public void StopWatching()
         {
-            if (_watcher is null) return;
+            if (_watcher is null)
+            {
+                return;
+            }
 
-            _watcher.Changed -= WatcherOnChanged;
+            _watcher.Changed -= WatcherOnCreated;
             _watcher.EnableRaisingEvents = false;
             _watcher.Dispose();
             _watcher = null;
             IsWatching = false;
-            
-            Debug.LogError("Stopped watching");
         }
     }
 }

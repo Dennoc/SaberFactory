@@ -21,11 +21,11 @@ namespace SaberFactory.UI.Lib.PropCells
 
             if (data.AddtionalData is Vector2 minMax)
             {
-                _sliderSetting.slider.minValue = minMax.x;
-                _sliderSetting.slider.maxValue = minMax.y;
+                _sliderSetting.Slider.minValue = minMax.x;
+                _sliderSetting.Slider.maxValue = minMax.y;
             }
 
-            _sliderSetting.slider.value = val;
+            _sliderSetting.Slider.value = val;
             _sliderSetting.ReceiveValue();
             _sliderSettingText.text = data.Text;
 

@@ -54,7 +54,7 @@ namespace SaberFactory.UI.Lib
             var data = await Readers.ReadResourceAsync(resourceName);
             var content = Encoding.UTF8.GetString(data, 3, data.Length - 3);
             content = Process(content);
-            return BSMLParser.instance.Parse(content, parent, host);
+            return BSMLParser.Instance.Parse(content, parent, host);
         }
         
         public BSMLParserParams ParseFromResource(string resourceName, GameObject parent, object host)
@@ -62,7 +62,7 @@ namespace SaberFactory.UI.Lib
             var data = Readers.ReadResource(resourceName);
             var content = Encoding.UTF8.GetString(data, 3, data.Length - 3);
             content = Process(content);
-            return BSMLParser.instance.Parse(content, parent, host);
+            return BSMLParser.Instance.Parse(content, parent, host);
         }
 
         public string Process(string content)
