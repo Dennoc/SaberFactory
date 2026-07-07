@@ -74,7 +74,7 @@ namespace SaberFactory.Models.CustomSaber
             if (!HasTrail) return;
             var trailModel = TrailModel;
 
-            var path = PathTools.ToFullPath(StoreAsset.RelativePath) + ".trail";
+            var path = _pluginDirectories.Cache.GetFile(StoreAsset.NameWithoutExtension + ".trail").FullName;
             var trail = new TrailProportions
             {
                 Length = trailModel.Length,

@@ -19,6 +19,7 @@ namespace SaberFactory.DataStore
     internal class MainAssetStore : IDisposable
     {
         public bool IsLoading { get; private set; }
+
         public List<string> AdditionalCustomSaberFolders { get; } = new List<string>();
 
         public Task<ModelComposition> this[string path] => GetCompositionByPath(path);
