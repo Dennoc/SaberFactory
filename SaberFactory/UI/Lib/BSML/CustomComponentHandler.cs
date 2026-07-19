@@ -42,11 +42,13 @@ namespace SaberFactory.UI.Lib.BSML
         }
 
         public void Initialize()
+
+
         { }
 
         private void RegisterAll(BSMLParser parser)
         {
-            
+           
             foreach (var tag in InstantiateOfType<BSMLTag>())
             {
                 parser.RegisterTag(tag);
@@ -79,7 +81,6 @@ namespace SaberFactory.UI.Lib.BSML
             var thisAsm = Assembly.GetExecutingAssembly();
             var tags = parser.GetField<Dictionary<string, BSMLTag>, BSMLParser>("tags");
             var typeHandlers = parser.GetField<List<TypeHandler>, BSMLParser>("typeHandlers");
-            var tempParent = new GameObject("BSMLDocTemp").transform;
 
             var additionalCssProps = new HashSet<string> { "style" };
 
@@ -92,6 +93,8 @@ namespace SaberFactory.UI.Lib.BSML
             var schema = XmlSchema.Read(XmlReader.Create(new StringReader(schemaTemplate)), (sender, args) => { });
 
             var attrDict = new Dictionary<string, XmlSchemaAttribute>();
+
+            var parent = new GameObject("SaberFactory CustomComponentHandler").transform;
 
             foreach (var item in schema.Items)
             {
@@ -114,7 +117,7 @@ namespace SaberFactory.UI.Lib.BSML
                     {
                         try
                         {
-                            var node = tag.CreateObject(tempParent);
+                            var node = tag.CreateObject(parent);
                             foreach (var typeHandler in typeHandlers.Where(x => x.GetType().Assembly == thisAsm))
                             {
                                 var type = typeHandler.GetType().GetCustomAttribute<ComponentHandler>().Type;
@@ -161,7 +164,7 @@ namespace SaberFactory.UI.Lib.BSML
 
                 try
                 {
-                    var currentNode = tag.CreateObject(tempParent);
+                    var currentNode = tag.CreateObject(parent);
                     foreach (var typeHandler in typeHandlers)
                     {
                         var type = typeHandler.GetType().GetCustomAttribute<ComponentHandler>().Type;
