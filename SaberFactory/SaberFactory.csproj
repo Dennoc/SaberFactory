@@ -336,6 +336,7 @@
     <EmbeddedResource Include="Resources\Icons\cog.png" />
     <EmbeddedResource Include="Resources\Icons\discord.png" />
     <EmbeddedResource Include="Resources\Icons\profile.png" />
+	<EmbeddedResource Include="Resources\Icons\profile_two.png" />
     <EmbeddedResource Include="Resources\Icons\update.png" />
     <EmbeddedResource Include="Resources\Icons\SFSaber_Icon.png" />
   </ItemGroup>
