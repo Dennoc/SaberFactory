@@ -38,7 +38,7 @@
                     preferred-height='15'
                     on-click='profiletwo-clicked'
                     icon='SaberFactory.Resources.Icons.profile_two.png'
-                    hover-hint='New Maintainer Denno'
+                    hover-hint='Fork Maintainer Denno'
                     skew='0' show-line='false' normal-color='#00000000' hovered-color='#00b6ff40' use-gradient='false'/>
             <sui.icon-button
                     id='github-button'
