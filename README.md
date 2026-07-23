@@ -29,6 +29,10 @@ Change the shape, shaders, material properties, textures and more of parts and s
 
 **You can use and customize both parts and custom sabers in saber factory**
 
+**Underground releases**
+
+[1.29](https://github.com/Dennoo11/SaberFactory/blob/2.5.4-1.29/assets/SaberFactory-2.5.4-bs1.29.0-dfdbaaf.zip).
+
 ## How do I install it
 1) Download the first zip from [Here](https://github.com/Dennoo11/SaberFactory/releases)
 2) Unpack it in your Beat Saber directory
