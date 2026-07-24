@@ -16,7 +16,7 @@ namespace SaberFactory.UI.CustomSaber.Views
     {
         private const string ProfileUrl = "https://github.com/ToniMacaroni";
         private const string DiscordUrl = "https://github.com/ToniMacaroni/SaberFactory";
-        private const string ProfileTwoUrl = "https://github.com/Dennoo11";
+        private const string ProfileTwoUrl = "https://github.com/Dennoc";
 
         [UIComponent("changelog-popup")] private readonly ChangelogPopup _changelogPopup = null;
         [UIObject("github-button")] private readonly GameObject _githubButton = null;
