@@ -31,7 +31,7 @@ Change the shape, shaders, material properties, textures and more of parts and s
 
 **Underground releases**
 
-[1.29](https://github.com/Dennoo11/SaberFactory/blob/2.5.4-1.29/assets/SaberFactory-2.5.4-bs1.29.0-dfdbaaf.zip).
+[Saber Factory 2.5.4 1.29.0](https://github.com/Dennoo11/SaberFactory/tree/2.5.4-1.29/assets/Saber%20Factory%201.29%20Releases).
 
 ## How do I install it
 1) Download the first zip from [Here](https://github.com/Dennoo11/SaberFactory/releases)
