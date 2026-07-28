@@ -234,8 +234,6 @@
     <EmbeddedResource Include="Resources\Icons\folder.png" />
     <EmbeddedResource Include="Resources\Icons\transform-icon.png" />
     <EmbeddedResource Include="Resources\UI\border.png" />
-    <None Remove="Resources\UI\halloween_bg.png" />
-    <EmbeddedResource Include="Resources\UI\halloween_bg.png" />
     <None Remove="Resources\Icons\wrench.png" />
     <EmbeddedResource Include="Resources\Icons\wrench.png" />
     <None Remove="Serialization\MeshRendererModifierView.bsml" />

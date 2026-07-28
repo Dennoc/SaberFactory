@@ -50,9 +50,6 @@ namespace SaberFactory.Configuration
         // A multiplier for the sounds a saber may have (e.g. plasma katana startup sound)
         public float SaberAudioVolumeMultiplier { get; set; } = 1;
 
-        // Show a special background during events like halloween
-        public bool SpecialBackground { get; set; } = true;
-
         // First color of the gradiant of items in a the saber list
         [UseConverter(typeof(HexColorConverter))]
         public Color ListCellColor0 { get; set; } = new Color(0.047f, 0.471f, 0.949f);
