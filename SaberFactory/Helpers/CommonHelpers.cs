@@ -69,12 +69,6 @@ namespace SaberFactory.Helpers
             return default;
         }
 
-        public static bool IsDate(int? day, int? month)
-        {
-            var time = Utils.CanUseDateTimeNowSafely ? DateTime.Now : DateTime.UtcNow;
-            return (!day.HasValue || time.Day == day) && (!month.HasValue || time.Month == month);
-        }
-
         public static async Task WaitForFinish(this ILoadingTask loadingTask)
         {
             if (loadingTask.CurrentTask == null)

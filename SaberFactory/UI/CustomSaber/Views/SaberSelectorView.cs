@@ -62,6 +62,7 @@ namespace SaberFactory.UI.CustomSaber.Views
         [Inject] private readonly EditorInstanceManager _editorInstanceManager = null;
 
         [Inject] private readonly MainAssetStore _mainAssetStore = null;
+        [Inject(Id = nameof(SaberFactory))] private readonly PluginMetadata _metadata = null;
         [Inject] private readonly PluginConfig _pluginConfig = null;
         [Inject] private readonly RemotePartRetriever _remotePartRetriever = null;
         [Inject] private readonly SaberFileWatcher _saberFileWatcher = null;
@@ -106,19 +107,11 @@ namespace SaberFactory.UI.CustomSaber.Views
             _dirManager = new ListItemDirectoryManager(_mainAssetStore.AdditionalCustomSaberFolders);
             _saberList.OnItemSelected += SaberSelected;
             _saberList.OnCategorySelected += DirectorySelected;
-            _listTitle = "";
+            _listTitle = "<color=#2f6594>Saber Factory " + _metadata.HVersion + "</color>";
             _saberList.SetText(_listTitle);
             await LoadSabers();
 
-            if (CommonHelpers.IsDate(null, 10) &&
-                _pluginConfig.SpecialBackground &&
-                _saberList.transform.GetChild(0) is {} child && child.GetComponent<ImageView>() is { } imageView)
-            {
-                imageView.sprite = Utilities.FindSpriteInAssembly("SaberFactory.Resources.UI.halloween_bg.png");
-                imageView.overrideSprite = imageView.sprite;
-                // ColorUtility.TryParseHtmlString("#c5c5c5", out var newBgColor);
-                // imageView.color = newBgColor;
-            }
+           
         }
 
         private async void DirectorySelected(string dir)
