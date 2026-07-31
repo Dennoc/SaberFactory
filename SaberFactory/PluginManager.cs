@@ -39,7 +39,7 @@ namespace SaberFactory
         {
             try
             {
-                var response = await _webClient.GetAsync("https://api.github.com/repos/Dennoo11/SaberFactory/releases", null, cancellationToken);
+                var response = await _webClient.GetAsync("https://api.github.com/repos/Dennoc/SaberFactory/releases", null, cancellationToken);
                 if (response.Successful)
                 {
                     var releases = JsonConvert.DeserializeObject<Release[]>(await response.ReadAsStringAsync());
