@@ -194,7 +194,6 @@ namespace SaberFactory.UI.CustomSaber.Views
             if (_currentComposition != null)
             {
                 _saberList.Select(_mainAssetStore.GetMetaDataForComposition(_currentComposition)?.ListName, !scrollToTop);
-                UpdatePedestalText(_currentComposition);
             }
 
             if (scrollToTop)
@@ -271,24 +270,13 @@ namespace SaberFactory.UI.CustomSaber.Views
                 return;
             }
 
-            _editor.FlashPedestal(new Color(0.24f, 0.77f, 1f));
+            
         }
 
         private void CompositionDidChange(ModelComposition comp)
         {
             _currentComposition = comp;
-            UpdatePedestalText(comp);
             _saberList.Select(comp);
-        }
-
-        private void UpdatePedestalText(ICustomListItem item)
-        {
-            var saberName = item.ListName;
-            if (saberName.Length > 12)
-            {
-                saberName = saberName.Substring(0, 9) + "...";
-            }
-            _editor.SetPedestalText(0, saberName);
         }
 
         private void UpdateUi()
