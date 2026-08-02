@@ -7,7 +7,7 @@
     <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
     <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
     <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
-    <Copyright>Copyright © Toni Macaroni 2021</Copyright>
+    <Copyright>Copyright © Toni Macaroni 2026</Copyright>
     <AssemblyName>SaberFactory</AssemblyName>
     <RootNamespace>SaberFactory</RootNamespace>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
