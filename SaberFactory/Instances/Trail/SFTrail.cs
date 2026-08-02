@@ -8,11 +8,11 @@ namespace SaberFactory.Instances.Trail
     internal class SFTrail : MonoBehaviour
     {
         public static bool CapFps;
-
+        
         protected float TrailWidth => (PointStart.position - PointEnd.position).magnitude;
 
         public Vector3 CurHeadPos => (PStartPos + PEndPos) / 2f;
-
+        
         public Color Color = Color.white;
         public int Granularity = 60;
         public int SamplingFrequency = 20;
@@ -34,7 +34,7 @@ namespace SaberFactory.Instances.Trail
         protected VertexPool.VertexSegment _vertexSegment;
 
         private readonly int _skipFirstFrames = 4;
-
+        
         private int _frameNum;
         private float _time;
         private bool _relativeMode;
@@ -61,7 +61,7 @@ namespace SaberFactory.Instances.Trail
             {
                 return Vector3.zero;
             }
-
+            
             return PlayerTransforms.transform.position;
         }
 
@@ -114,7 +114,7 @@ namespace SaberFactory.Instances.Trail
 
             _inited = true;
         }
-
+        
         private void LateUpdate()
         {
             // if (PlayerTransforms)
@@ -122,7 +122,7 @@ namespace SaberFactory.Instances.Trail
             //     _pointOffset = PlayerTransforms.transform.position;
             //     Debug.Log($"Adjusting trail offset to {_pointOffset}");
             // }
-
+            
             if (!_inited)
             {
                 return;
@@ -151,14 +151,14 @@ namespace SaberFactory.Instances.Trail
 
                 var pStartPos = PStartPos;
                 var pEndPos = PEndPos;
-
+                
                 for (var i = 0; i < TrailLength; i++)
                 {
                     _spline.AddControlPoint(CurHeadPos, pStartPos - pEndPos);
                 }
 
                 _snapshotList.Clear();
-
+                
                 _snapshotList.Add(new Element(pStartPos, pEndPos));
                 _snapshotList.Add(new Element(pStartPos, pEndPos));
             }
@@ -223,7 +223,7 @@ namespace SaberFactory.Instances.Trail
                 var uvCoord = Vector2.zero;
 
                 var pos = _spline.InterpolateByLen(uvSegment);
-
+                
                 if (RelativeMode)
                 {
                     pos += offset;
@@ -376,12 +376,12 @@ namespace SaberFactory.Instances.Trail
 
             public void Release(Element element)
             {
-#if DEBUG
+                #if DEBUG
                 if (_stack.Count > 0 && ReferenceEquals(_stack.Peek(), element))
                 {
                     Debug.LogError("Internal error. Trying to destroy object that is already released to pool.");
                 }
-#endif
+                #endif
 
                 _stack.Push(element);
             }
