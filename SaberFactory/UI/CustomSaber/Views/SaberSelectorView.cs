@@ -77,7 +77,7 @@ namespace SaberFactory.UI.CustomSaber.Views
         private ChooseSort.ESortMode _sortMode = ChooseSort.ESortMode.Name;
         private string _filter = string.Empty;
 
-        private bool _isSearching => !string.IsNullOrEmpty(_filter);
+        private bool IsSearching => !string.IsNullOrEmpty(_filter);
 
         public ENavigationCategory Category => ENavigationCategory.Saber;
 
@@ -138,7 +138,7 @@ namespace SaberFactory.UI.CustomSaber.Views
             // Get all metadata and sort by favorite
             var metaEnumerable =
                 from meta in _mainAssetStore.GetAllMetaData()
-                where !_isSearching
+                where !IsSearching
                       || meta.ListName.ToLowerInvariant().Contains(_filter)
                       || meta.ListAuthor.ToLowerInvariant().Contains(_filter)
                 orderby meta.IsFavorite descending
@@ -174,7 +174,7 @@ namespace SaberFactory.UI.CustomSaber.Views
             // Show downloadable sabers
             if (_pluginConfig.ShowDownloadableSabers &&
                 _remotePartRetriever.RetrievingStatus == RemotePartRetriever.Status.Success &&
-                !_isSearching)
+                !IsSearching)
             {
                 var idx = items.Count(x => x.IsFavorite);
 
@@ -194,7 +194,7 @@ namespace SaberFactory.UI.CustomSaber.Views
             ShowDownloadSabersPopup = items.Count() <= addedDownloadables;
 
             // Fill the saber list with the currently selected directory
-            _saberList.SetItems(_dirManager.Process(items, _isSearching));
+            _saberList.SetItems(_dirManager.Process(items, IsSearching));
 
             _currentComposition = _editorInstanceManager.CurrentModelComposition;
 
