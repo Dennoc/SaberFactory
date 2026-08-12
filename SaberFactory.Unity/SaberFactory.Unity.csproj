@@ -80,18 +80,11 @@
       <Compile Include="..\SaberFactory\ProjectComponents\SaberModifierCollection.cs">
         <Link>SaberModifierCollection.cs</Link>
       </Compile>
-      <Compile Include="..\SaberFactory\ProjectComponents\SFSaberSound.cs" Link="SFSaberSound.cs" />
       <Compile Include="..\SaberFactory\ProjectComponents\TransformModifier.cs">
         <Link>TransformModifier.cs</Link>
       </Compile>
       <Compile Include="..\SaberFactory\ProjectComponents\VisibilityModifier.cs">
         <Link>VisibilityModifier.cs</Link>
-      </Compile>
-      <Compile Include="..\SaberFactory\ProjectComponents\SFBurnmarks.cs">
-	      <Link>SFBurnMarks.cs</Link>
-      </Compile>
-      <Compile Include="..\SaberFactory\ProjectComponents\SFClashEffect.cs">
-	      <Link>SFClashEffect.cs</Link>
       </Compile>
       <Compile Include="..\SaberFactory\ProjectComponents\HelpAttribute.cs">
 	      <Link>HelpAttribute.cs</Link>

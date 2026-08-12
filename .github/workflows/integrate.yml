@@ -20,6 +20,10 @@ jobs:
         dotnet-version: '10.0.x'
     - name: Initialize modding environment
       uses: beat-forge/init-beatsaber@v1
+    - name: Download Beatmods dependencies
+      uses: Aeroluna/download-beatmods-deps@main
+      with:
+        project-path: '.'
     - name: Build
       id: Build
       env: 
