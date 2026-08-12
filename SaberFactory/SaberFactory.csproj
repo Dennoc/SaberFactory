@@ -287,10 +287,18 @@
     <EmbeddedResource Include="UI\CustomSaber\CustomComponents\PropList.bsml">
       <DependentUpon>PropList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Lib\PropCells\FloatPropCell.bsml" />
-    <EmbeddedResource Include="UI\Lib\PropCells\BoolPropCell.bsml" />
-    <EmbeddedResource Include="UI\Lib\PropCells\ColorPropCell.bsml" />
-    <EmbeddedResource Include="UI\Lib\PropCells\TexturePropCell.bsml" />
+    <EmbeddedResource Include="UI\Lib\PropCells\FloatPropCell.bsml">
+      <DependentUpon>FloatPropCell.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Lib\PropCells\BoolPropCell.bsml">
+      <DependentUpon>BoolPropCell.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Lib\PropCells\ColorPropCell.bsml">
+      <DependentUpon>ColorPropCell.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Lib\PropCells\TexturePropCell.bsml">
+      <DependentUpon>TexturePropCell.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\CustomSaber\Views\SettingsView.bsml">
       <DependentUpon>SettingsView.cs</DependentUpon>
     </EmbeddedResource>

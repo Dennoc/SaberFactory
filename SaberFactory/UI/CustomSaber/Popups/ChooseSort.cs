@@ -21,11 +21,17 @@ namespace SaberFactory.UI.CustomSaber.Popups
 
         public bool ShouldScrollToTop { get; set; } = true;
 
-        private Action<ESortMode> _onSelectionChanged;
+        private Action<ESortMode, string> _onSelectionChanged;
+        
+        private ESortMode _sortMode = default;
+        [UIValue("SaberSearch")] private string _saberSearch; // Added these values to rebuild the state before exiting last time.
 
-        public async void Show(Action<ESortMode> onSelectionChanged)
+
+        public async void Show(Action<ESortMode, string> onSelectionChanged, string currentFilter, ESortMode currentSortMode)
         {
             _onSelectionChanged = onSelectionChanged;
+            _saberSearch = currentFilter;
+            _sortMode = currentSortMode;
 
             var modes = new List<SortModeItem>();
             foreach (var mode in (ESortMode[])Enum.GetValues(typeof(ESortMode)))
@@ -42,7 +48,7 @@ namespace SaberFactory.UI.CustomSaber.Popups
 
         private void SortSelected(ICustomListItem item)
         {
-            _onSelectionChanged?.Invoke(((SortModeItem)item).SortMode);
+            _onSelectionChanged?.Invoke(((SortModeItem)item).SortMode, _saberSearch);
             Exit();
         }
 
@@ -57,6 +63,13 @@ namespace SaberFactory.UI.CustomSaber.Popups
         [UIAction("click-cancel")]
         private void ClickSelect()
         {
+            Exit();
+        }
+        
+        [UIAction("on-saber-search-change")]
+        private void OnSaberSearchChange(string value)
+        {
+            _onSelectionChanged?.Invoke(_sortMode, value);
             Exit();
         }
 
