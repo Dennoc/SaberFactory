@@ -33,7 +33,16 @@ namespace SaberFactory.Helpers
 
         public static bool TryGetMainTexture(this Material material, out Texture tex)
         {
+            // This should be a thing imo, MainTexture isn't always the _MainTex property,
+            // Example for this would be the 'BeatSaber/Fire Trail' Shader
+            // It uses _AlphaTex for the MainTexture, I think there should be some kind of discovery that checks common names.
+            // Better Solution might be to make the Material Editor aka TexturePropCell, have a Toggle that allows clamping ANY texture.
             return TryGetTexture(material, MaterialProperties.MainTexture, out tex);
+            /* ||
+            TryGetTexture(material, "_AlphaTex", out tex) ||
+            TryGetTexture(material, "_ColorTex", out tex) ||
+            TryGetTexture(material, "_BaseTexture", out tex);
+            */
         }
 
         public static bool TryGetFloat(this Material material, string propName, out float val)
@@ -106,7 +115,8 @@ namespace SaberFactory.Helpers
             return material.TryGetFloat(MaterialProperties.CustomColors, out var customColors) && customColors > 0.5f;
         }
 
-        public static IEnumerable<(object, int, ShaderPropertyType)> GetProperties(this Material material, string ignoredAttribute = null)
+        public static IEnumerable<(object, int, ShaderPropertyType)> GetProperties(this Material material,
+            string ignoredAttribute = null)
         {
             var shader = material.shader;
             var propCount = shader.GetPropertyCount();
