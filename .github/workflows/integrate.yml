@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+    
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
 jobs:
   build:
@@ -23,19 +26,19 @@ jobs:
     - name: Download Beatmods dependencies
       uses: Aeroluna/download-beatmods-deps@main
       with:
-        project-path: '.'
+        project-path: 'SaberFactory/SaberFactory.csproj'
+        path: './Refs'
+        game-version: 1.40.8
+        additional-dependencies: '{}'
     - name: Build
       id: Build
-      env: 
-        FrameworkPathOverride: /usr/lib/mono/4.7.2-api
-      run: dotnet build --configuration Release
-    - name: Echo Filename
-      run: echo "$BUILDTEXT ($ASSEMBLYNAME)"
       env:
-        BUILDTEXT: Filename=${{ steps.Build.outputs.filename }}
-        ASSEMBLYNAME: AssemblyName=${{ steps.Build.outputs.assemblyname }}
+        FrameworkPathOverride: /usr/lib/mono/4.7.2-api
+      run: |
+        dotnet build --configuration Release
+        echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ steps.Build.outputs.filename }}
+        name: SaberFactory-${{ steps.Build.outputs.sha_short }}
         path: ./SaberFactory/bin/Release/Final
