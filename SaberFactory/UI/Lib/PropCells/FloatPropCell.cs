@@ -10,8 +10,8 @@ namespace SaberFactory.UI.Lib.PropCells
     internal class FloatPropCell : BasePropCell
     {
         [UIComponent("bg")] private readonly Image _backgroundImage = null;
-        [UIComponent("val-slider")] private readonly SliderSetting _sliderSetting = null;
-        [UIComponent("val-slider")] private readonly TextMeshProUGUI _sliderSettingText = null;
+        [UIComponent("val-increment")] private readonly IncrementSetting _incrementSetting = null;
+        [UIComponent("val-increment")] private readonly TextMeshProUGUI _sliderSettingText = null;
 
         public override void SetData(PropertyDescriptor data)
         {
@@ -24,12 +24,21 @@ namespace SaberFactory.UI.Lib.PropCells
 
             if (data.AddtionalData is Vector2 minMax && val > minMax.x && val < minMax.y)
             {
-                _sliderSetting.Slider.minValue = minMax.x;
-                _sliderSetting.Slider.maxValue = minMax.y;
+                _incrementSetting.MinValue = minMax.x;
+                _incrementSetting.MaxValue = minMax.y;
+
+                // 1% of total, also idk if 0.01f is better or division by 100?
+                _incrementSetting.Increments = (minMax.y - minMax.x) * 0.01f;
+            }
+            else
+            {
+                _incrementSetting.MinValue = -1000;
+                _incrementSetting.MaxValue = 1000;
+                _incrementSetting.Increments = 0.1f;
             }
 
-            _sliderSetting.Slider.value = val;
-            _sliderSetting.ReceiveValue();
+            _incrementSetting.Value = val;
+            _incrementSetting.ReceiveValue();
             _sliderSettingText.text = data.Text;
 
             if (ThemeManager.GetDefinedColor("prop-cell", out var bgColor))
