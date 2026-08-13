@@ -14,12 +14,6 @@
         <Version>3.0.0</Version>
         <SignAssembly>false</SignAssembly>
     </PropertyGroup>
-
-    <ItemGroup>
-        <DependsOn Include="SiraUtil" Version="^3.2.1"/>
-        <DependsOn Include="BeatSaberMarkupLanguage" Version="^1.12.5"/>
-        <DependsOn Include="Heck" Version="^1.7.14+1.40.3"/>
-    </ItemGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <Optimize>false</Optimize>
         <OutputPath>bin\Debug\</OutputPath>
@@ -42,9 +36,9 @@
         <DefineConstants>$(DefineConstants)TRACE;ENABLE_PROFILER</DefineConstants>
     </PropertyGroup>
     <ItemGroup>
-        <None Remove="Resources\Icons\folder.png"/>
-        <None Remove="Resources\Icons\transform-icon.png"/>
-        <None Remove="Resources\UI\border.png"/>
+        <None Remove="Resources\Icons\folder.png" />
+        <None Remove="Resources\Icons\transform-icon.png" />
+        <None Remove="Resources\UI\border.png" />
         <Reference Include="BeatmapCore">
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatmapCore.dll</HintPath>
             <Private>False</Private>
@@ -233,28 +227,28 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Include="manifest.json"/>
-        <EmbeddedResource Include="Resources\CustomSaberComponents.dll"/>
-        <EmbeddedResource Include="Resources\assets"/>
-        <EmbeddedResource Include="Resources\pedestal"/>
-        <EmbeddedResource Include="Resources\Icons\folder.png"/>
-        <EmbeddedResource Include="Resources\Icons\transform-icon.png"/>
-        <EmbeddedResource Include="Resources\UI\border.png"/>
-        <None Remove="Resources\Icons\wrench.png"/>
-        <EmbeddedResource Include="Resources\Icons\wrench.png"/>
-        <None Remove="Serialization\MeshRendererModifierView.bsml"/>
-        <None Remove="UI\CustomSaber\CustomSaberUiComposition.css"/>
-        <EmbeddedResource Include="UI\CustomSaber\BaseUiComposition.css"/>
-        <None Remove="UI\PatreonView.bsml"/>
-        <EmbeddedResource Include="UI\PatreonView.bsml"/>
-        <None Remove="Resources\UI\patreon-medium-button.png"/>
-        <EmbeddedResource Include="Resources\UI\patreon-button.png"/>
+        <EmbeddedResource Include="manifest.json" />
+        <EmbeddedResource Include="Resources\CustomSaberComponents.dll" />
+        <EmbeddedResource Include="Resources\assets" />
+        <EmbeddedResource Include="Resources\pedestal" />
+        <EmbeddedResource Include="Resources\Icons\folder.png" />
+        <EmbeddedResource Include="Resources\Icons\transform-icon.png" />
+        <EmbeddedResource Include="Resources\UI\border.png" />
+        <None Remove="Resources\Icons\wrench.png" />
+        <EmbeddedResource Include="Resources\Icons\wrench.png" />
+        <None Remove="Serialization\MeshRendererModifierView.bsml" />
+        <None Remove="UI\CustomSaber\CustomSaberUiComposition.css" />
+        <EmbeddedResource Include="UI\CustomSaber\BaseUiComposition.css" />
+        <None Remove="UI\PatreonView.bsml" />
+        <EmbeddedResource Include="UI\PatreonView.bsml" />
+        <None Remove="Resources\UI\patreon-medium-button.png" />
+        <EmbeddedResource Include="Resources\UI\patreon-button.png" />
     </ItemGroup>
     <ItemGroup>
-        <None Include="..\.editorconfig" Link=".editorconfig"/>
-        <None Include="Directory.Build.props" Condition="Exists('Directory.Build.props')"/>
-        <None Include="Directory.Build.targets" Condition="Exists('Directory.Build.targets')"/>
-        <None Include="SaberFactory.csproj.user" Condition="Exists('SaberFactory.csproj.user')"/>
+        <None Include="..\.editorconfig" Link=".editorconfig" />
+        <None Include="Directory.Build.props" Condition="Exists('Directory.Build.props')" />
+        <None Include="Directory.Build.targets" Condition="Exists('Directory.Build.targets')" />
+        <None Include="SaberFactory.csproj.user" Condition="Exists('SaberFactory.csproj.user')" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="UI\CustomSaber\Views\MainView.bsml">
@@ -293,18 +287,19 @@
         <EmbeddedResource Include="UI\CustomSaber\CustomComponents\PropList.bsml">
             <DependentUpon>PropList.cs</DependentUpon>
         </EmbeddedResource>
-        <EmbeddedResource Include="UI\Lib\PropCells\FloatPropCell.bsml">
-            <DependentUpon>FloatPropCell.cs</DependentUpon>
-        </EmbeddedResource>
-        <EmbeddedResource Include="UI\Lib\PropCells\BoolPropCell.bsml">
-            <DependentUpon>BoolPropCell.cs</DependentUpon>
-        </EmbeddedResource>
-        <EmbeddedResource Include="UI\Lib\PropCells\ColorPropCell.bsml">
-            <DependentUpon>ColorPropCell.cs</DependentUpon>
-        </EmbeddedResource>
-        <EmbeddedResource Include="UI\Lib\PropCells\TexturePropCell.bsml">
-            <DependentUpon>TexturePropCell.cs</DependentUpon>
-        </EmbeddedResource>
+
+
+        <!--
+        Making the CS files DependentUpon for these PropCells breaks the discovery for their CS Files that Toni implemented
+        Might be worth investigating if something similar happens again?
+        I did it with Rider and not manually, so that might be it?
+        For now I don't wanna mess with these
+        -->
+        <EmbeddedResource Include="UI\Lib\PropCells\FloatPropCell.bsml" />
+        <EmbeddedResource Include="UI\Lib\PropCells\BoolPropCell.bsml" />
+        <EmbeddedResource Include="UI\Lib\PropCells\ColorPropCell.bsml" />
+        <EmbeddedResource Include="UI\Lib\PropCells\TexturePropCell.bsml" />
+        
         <EmbeddedResource Include="UI\CustomSaber\Views\SettingsView.bsml">
             <DependentUpon>SettingsView.cs</DependentUpon>
         </EmbeddedResource>
@@ -331,21 +326,21 @@
         </EmbeddedResource>
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Include="Resources\Icons\blade-icon.png"/>
-        <EmbeddedResource Include="Resources\Icons\customsaber-icon.png"/>
-        <EmbeddedResource Include="Resources\Icons\emitter-icon.png"/>
-        <EmbeddedResource Include="Resources\Icons\halo-icon.png"/>
-        <EmbeddedResource Include="Resources\Icons\hilt-icon.png"/>
-        <EmbeddedResource Include="Resources\Icons\model-icon.png"/>
-        <EmbeddedResource Include="Resources\Icons\pommel-icon.png"/>
-        <EmbeddedResource Include="Resources\Icons\trail-icon.png"/>
-        <EmbeddedResource Include="Resources\Icons\heart.png"/>
-        <EmbeddedResource Include="Resources\Icons\cog.png"/>
-        <EmbeddedResource Include="Resources\Icons\discord.png"/>
-        <EmbeddedResource Include="Resources\Icons\profile.png"/>
-        <EmbeddedResource Include="Resources\Icons\profile_two.png"/>
-        <EmbeddedResource Include="Resources\Icons\update.png"/>
-        <EmbeddedResource Include="Resources\Icons\SFSaber_Icon.png"/>
+        <EmbeddedResource Include="Resources\Icons\blade-icon.png" />
+        <EmbeddedResource Include="Resources\Icons\customsaber-icon.png" />
+        <EmbeddedResource Include="Resources\Icons\emitter-icon.png" />
+        <EmbeddedResource Include="Resources\Icons\halo-icon.png" />
+        <EmbeddedResource Include="Resources\Icons\hilt-icon.png" />
+        <EmbeddedResource Include="Resources\Icons\model-icon.png" />
+        <EmbeddedResource Include="Resources\Icons\pommel-icon.png" />
+        <EmbeddedResource Include="Resources\Icons\trail-icon.png" />
+        <EmbeddedResource Include="Resources\Icons\heart.png" />
+        <EmbeddedResource Include="Resources\Icons\cog.png" />
+        <EmbeddedResource Include="Resources\Icons\discord.png" />
+        <EmbeddedResource Include="Resources\Icons\profile.png" />
+        <EmbeddedResource Include="Resources\Icons\profile_two.png" />
+        <EmbeddedResource Include="Resources\Icons\update.png" />
+        <EmbeddedResource Include="Resources\Icons\SFSaber_Icon.png" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="BeatSaberModdingTools.Tasks" Version="1.4.3">
