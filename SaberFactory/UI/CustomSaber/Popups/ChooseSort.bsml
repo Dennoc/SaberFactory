@@ -1,15 +1,11 @@
 ﻿<bg pad="5" bg="round-rect-panel" bg-color="#FFF" border="" raycast="true">
     <vertical vertical-fit='PreferredSize' spacing='5'>
-        <vertical pad-left='10' pad-right='10' spacing="2" pad-top="3">
-            <string-setting apply-on-change='true' text="Search Sabers" value="SaberSearch"
-                            on-change="on-saber-search-change"/>
-            <!--            <checkbox text='Scroll To Top' value='ShouldScrollToTop' apply-on-change='true' pref-width='70'/>
-            Maybe leave this here if someone wants to bring it back
-            -->
-        </vertical>
         <sui.custom-list id='sort-list' title='Sort by' width='80' height='60' bg-color='#FFF' title-size='6'/>
         <horizontal pad-left='5' pad-right='5'>
             <sui.button text='Cancel' pref-width='25' pref-height='12' on-click='click-cancel' normal-color='#00000080'/>
+            <vertical pad-left='10' pad-right='10' spacing="2" pad-top="3">
+                <checkbox text='Scroll To Top' value='ShouldScrollToTop' apply-on-change='true' pref-width='70'/>
+            </vertical>
         </horizontal>
     </vertical>
 </bg>

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.Components;
 using HMUI;
 using IPA.Loader;
 using IPA.Utilities;
@@ -77,6 +78,8 @@ namespace SaberFactory.UI.CustomSaber.Views
         private ChooseSort.ESortMode _sortMode = ChooseSort.ESortMode.Name;
         private string _filter = string.Empty;
 
+        [UIComponent("search-keyboard")] private ModalKeyboard _searchKeyboard = null;
+
         private bool IsSearching => !string.IsNullOrEmpty(_filter);
 
         public ENavigationCategory Category => ENavigationCategory.Saber;
@@ -110,6 +113,11 @@ namespace SaberFactory.UI.CustomSaber.Views
             _dirManager = new ListItemDirectoryManager(_mainAssetStore.AdditionalCustomSaberFolders);
             _saberList.OnItemSelected += SaberSelected;
             _saberList.OnCategorySelected += DirectorySelected;
+            _searchKeyboard.Keyboard.EnterPressed += async search =>
+            {
+                _filter = search;
+                await ShowSabers(true);
+            };
             _listTitle = "<color=#2f6594>Saber Factory " + _metadata.HVersion + "</color>";
             _saberList.SetText(_listTitle);
             await LoadSabers();
@@ -331,12 +339,17 @@ namespace SaberFactory.UI.CustomSaber.Views
         [UIAction("select-sort")]
         private async Task SelectSort()
         {
-            _chooseSortPopup.Show((async (sortMode, filter) =>
+            _chooseSortPopup.Show(async (sortMode) =>
             {
                 _sortMode = sortMode;
-                _filter = filter;
                 await ShowSabers(_chooseSortPopup.ShouldScrollToTop);
-            }), _filter, _sortMode);
+            });
+        }
+        
+        [UIAction("open-search-keyboard")]
+        private void OpenSearchKeyboard()
+        {
+            _searchKeyboard.ModalView.Show(true, true);
         }
 
         [UIAction("toggled-grab-saber")]
@@ -371,8 +384,7 @@ namespace SaberFactory.UI.CustomSaber.Views
                 await ShowSabers();
             }
             catch (Exception)
-            {
-            }
+            { }
 
             _loadingPopup.Hide();
             IsReloading = false;
@@ -399,8 +411,7 @@ namespace SaberFactory.UI.CustomSaber.Views
                 await ShowSabers();
             }
             catch (Exception)
-            {
-            }
+            { }
 
             _loadingPopup.Hide();
 
