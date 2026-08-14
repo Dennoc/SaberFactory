@@ -46,39 +46,42 @@ namespace SaberFactory.UI
             RefreshDirectoryString();
         }
 
-        public List<ICustomListItem> Process(IEnumerable<ICustomListItem> items)
+        public List<ICustomListItem> Process(IEnumerable<ICustomListItem> items, bool isSearchMode = false)
         {
-            var itemsList = FilterForDir(items, _currentDirectory).ToList();
+            var itemsList = !isSearchMode ? FilterForDir(items, _currentDirectory).ToList() : items.ToList();
 
-            var addedFolders = new HashSet<string>();
-
-            foreach (var folder in _additionalFolderPool)
+            if (!isSearchMode)
             {
-                if (!folder.StartsWith(_currentDirectory))
+                var addedFolders = new HashSet<string>();
+
+                foreach (var folder in _additionalFolderPool)
                 {
-                    continue;
+                    if (!folder.StartsWith(_currentDirectory))
+                    {
+                        continue;
+                    }
+
+                    var d = _currentDirectory == string.Empty ? folder : folder.Replace(_currentDirectory, "");
+                    if (d.Length > 0 && d[0] == '\\')
+                    {
+                        d = d.Substring(1);
+                    }
+
+                    d = d.Contains('\\') ? d.Substring(0, d.IndexOf('\\')) : d;
+                    if (d != string.Empty)
+                    {
+                        addedFolders.Add(d);
+                    }
                 }
 
-                var d = _currentDirectory == string.Empty ? folder : folder.Replace(_currentDirectory, "");
-                if (d.Length > 0 && d[0] == '\\')
-                {
-                    d = d.Substring(1);
-                }
+                itemsList.InsertRange(0, addedFolders.Select(x => new CustomList.ListDirectory(x)));
 
-                d = d.Contains('\\') ? d.Substring(0, d.IndexOf('\\')) : d;
-                if (d != string.Empty)
+                if (!IsInRoot)
                 {
-                    addedFolders.Add(d);
+                    itemsList.Insert(0, new CustomList.ListDirectory(UpDirIndicator));
                 }
             }
-
-            itemsList.InsertRange(0, addedFolders.Select(x => new CustomList.ListDirectory(x)));
-
-            if (!IsInRoot)
-            {
-                itemsList.Insert(0, new CustomList.ListDirectory(UpDirIndicator));
-            }
-
+            
             return itemsList;
         }
 

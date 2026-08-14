@@ -63,7 +63,17 @@
                         skew='0'
                         use-gradient='false'/>
             </horizontal>
-
+            <horizontal pref-height='16' pref-width='12' horizontal-fit='PreferredSize'>
+                <sui.icon-button
+                        on-click='open-search-keyboard'
+                        icon='#SearchIcon'
+                        show-line='false'
+                        hover-hint='Search'
+                        hovered-color='#3486ebff'
+                        skew='0'
+                        use-gradient='false'/>
+                <modal-keyboard id="search-keyboard"/>
+            </horizontal>
         </vertical>
     </horizontal>
 

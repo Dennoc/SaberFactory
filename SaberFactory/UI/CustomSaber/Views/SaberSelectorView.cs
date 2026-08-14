@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.Components;
 using HMUI;
 using IPA.Loader;
 using IPA.Utilities;
@@ -75,6 +76,11 @@ namespace SaberFactory.UI.CustomSaber.Views
         private bool _showDownloadSabersPopup;
 
         private ChooseSort.ESortMode _sortMode = ChooseSort.ESortMode.Name;
+        private string _filter = string.Empty;
+
+        [UIComponent("search-keyboard")] private ModalKeyboard _searchKeyboard = null;
+
+        private bool IsSearching => !string.IsNullOrEmpty(_filter);
 
         public ENavigationCategory Category => ENavigationCategory.Saber;
 
@@ -107,11 +113,14 @@ namespace SaberFactory.UI.CustomSaber.Views
             _dirManager = new ListItemDirectoryManager(_mainAssetStore.AdditionalCustomSaberFolders);
             _saberList.OnItemSelected += SaberSelected;
             _saberList.OnCategorySelected += DirectorySelected;
+            _searchKeyboard.Keyboard.EnterPressed += async search =>
+            {
+                _filter = search;
+                await ShowSabers(true);
+            };
             _listTitle = "<color=#2f6594>Saber Factory " + _metadata.HVersion + "</color>";
             _saberList.SetText(_listTitle);
             await LoadSabers();
-
-           
         }
 
         private async void DirectorySelected(string dir)
@@ -135,9 +144,13 @@ namespace SaberFactory.UI.CustomSaber.Views
         private async Task ShowSabers(bool scrollToTop = false, int delay = 0)
         {
             // Get all metadata and sort by favorite
-            var metaEnumerable = from meta in _mainAssetStore.GetAllMetaData()
+            var metaEnumerable =
+                from meta in _mainAssetStore.GetAllMetaData()
+                where !IsSearching
+                      || meta.ListName.ToLowerInvariant().Contains(_filter)
+                      || meta.ListAuthor.ToLowerInvariant().Contains(_filter)
                 orderby meta.IsFavorite descending
-                select meta;
+                select meta; // This is not my favorite way for the filter, but I reckon I have to life with it
 
             // Sort everything else by the selected sort mode
             switch (_sortMode)
@@ -167,7 +180,9 @@ namespace SaberFactory.UI.CustomSaber.Views
             var addedDownloadables = 0;
 
             // Show downloadable sabers
-            if (_pluginConfig.ShowDownloadableSabers && _remotePartRetriever.RetrievingStatus == RemotePartRetriever.Status.Success)
+            if (_pluginConfig.ShowDownloadableSabers &&
+                _remotePartRetriever.RetrievingStatus == RemotePartRetriever.Status.Success &&
+                !IsSearching)
             {
                 var idx = items.Count(x => x.IsFavorite);
 
@@ -187,13 +202,14 @@ namespace SaberFactory.UI.CustomSaber.Views
             ShowDownloadSabersPopup = items.Count() <= addedDownloadables;
 
             // Fill the saber list with the currently selected directory
-            _saberList.SetItems(_dirManager.Process(items));
+            _saberList.SetItems(_dirManager.Process(items, IsSearching));
 
             _currentComposition = _editorInstanceManager.CurrentModelComposition;
 
             if (_currentComposition != null)
             {
-                _saberList.Select(_mainAssetStore.GetMetaDataForComposition(_currentComposition)?.ListName, !scrollToTop);
+                _saberList.Select(_mainAssetStore.GetMetaDataForComposition(_currentComposition)?.ListName,
+                    !scrollToTop);
             }
 
             if (scrollToTop)
@@ -269,8 +285,6 @@ namespace SaberFactory.UI.CustomSaber.Views
             {
                 return;
             }
-
-            
         }
 
         private void CompositionDidChange(ModelComposition comp)
@@ -323,13 +337,19 @@ namespace SaberFactory.UI.CustomSaber.Views
         }
 
         [UIAction("select-sort")]
-        private void SelectSort()
+        private async Task SelectSort()
         {
-            _chooseSortPopup.Show(async sortMode =>
+            _chooseSortPopup.Show(async (sortMode) =>
             {
                 _sortMode = sortMode;
                 await ShowSabers(_chooseSortPopup.ShouldScrollToTop);
             });
+        }
+        
+        [UIAction("open-search-keyboard")]
+        private void OpenSearchKeyboard()
+        {
+            _searchKeyboard.ModalView.Show(true, true);
         }
 
         [UIAction("toggled-grab-saber")]

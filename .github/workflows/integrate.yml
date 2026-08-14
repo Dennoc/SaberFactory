@@ -6,34 +6,39 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+    
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup dotnet
-      uses: actions/setup-dotnet@v1
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: 3.1.101
-    - name: GetStrippedRefs
-      env:
-        FILES_URL: ${{ secrets.BSFILES_URL }}
-      run: wget --no-check-certificate "$FILES_URL" -q -O bsfiles.zip
-    - name: ExtractRefs
-      run: unzip -q -n bsfiles.zip -d ./Refs
+        dotnet-version: '10.0.x'
+    - name: Initialize modding environment
+      uses: beat-forge/init-beatsaber@v1
+    - name: Download Beatmods dependencies
+      uses: Aeroluna/download-beatmods-deps@main
+      with:
+        project-path: 'SaberFactory/SaberFactory.csproj'
+        path: './Refs'
+        game-version: 1.40.8
+        additional-dependencies: '{"Heck":"^1.7.14+1.40.3", "SiraUtil":"^3.2.1", "BeatSaberMarkupLanguage":"^1.12.5"}'
     - name: Build
       id: Build
-      env: 
-        FrameworkPathOverride: /usr/lib/mono/4.7.2-api
-      run: dotnet build --configuration Release
-    - name: Echo Filename
-      run: echo "$BUILDTEXT ($ASSEMBLYNAME)"
       env:
-        BUILDTEXT: Filename=${{ steps.Build.outputs.filename }}
-        ASSEMBLYNAME: AssemblyName=${{ steps.Build.outputs.assemblyname }}
+        FrameworkPathOverride: /usr/lib/mono/4.7.2-api
+      run: |
+        dotnet build --configuration Release
+        echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
     - name: Upload Artifact
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
-        name: ${{ steps.Build.outputs.filename }}
+        name: SaberFactory-${{ steps.Build.outputs.sha_short }}
         path: ./SaberFactory/bin/Release/Final
