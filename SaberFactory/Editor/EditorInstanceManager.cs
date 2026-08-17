@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SaberFactory.Configuration;
 using SaberFactory.Instances;
 using SaberFactory.Models;
@@ -17,7 +18,7 @@ namespace SaberFactory.Editor
     internal class EditorInstanceManager
     {
         [Inject] private PluginConfig _config = null;
-        
+
         public AssetTypeDefinition SelectedDefinition { get; }
         public SaberInstance CurrentSaber { get; private set; }
         public BasePieceInstance CurrentPiece { get; private set; }
@@ -48,10 +49,12 @@ namespace SaberFactory.Editor
         {
             if (show)
             {
-                foreach (var go in _disabledGameObjects)
+                foreach (var go in _disabledGameObjects.Where(go => go != null))
                 {
-                    go.gameObject.SetActive(true);
+                    go.SetActive(true);
                 }
+                
+                _disabledGameObjects.Clear();
 
                 return;
             }
@@ -164,6 +167,7 @@ namespace SaberFactory.Editor
         {
             CurrentModelComposition?.DestroyAdditionalInstances();
             CurrentSaber?.Destroy();
+            _disabledGameObjects.Clear();
             CurrentSaber = null;
             CurrentPiece = null;
         }
