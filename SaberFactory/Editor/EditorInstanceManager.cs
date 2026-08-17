@@ -49,23 +49,34 @@ namespace SaberFactory.Editor
         {
             if (show)
             {
-                foreach (var go in _disabledGameObjects.Where(go => go != null))
+                foreach (var go in _disabledGameObjects)
                 {
-                    go.SetActive(true);
+                    if (go != null)
+                    {
+                        go.SetActive(true);
+                    }
                 }
-                
-                _disabledGameObjects.Clear();
 
+                _disabledGameObjects.Clear();
                 return;
             }
 
-            var gos = CurrentSaber.GameObject.GetComponentsInChildren<ParticleSystem>();
-            foreach (var go in gos)
+            foreach (var particle in CurrentSaber.GameObject.GetComponentsInChildren<ParticleSystem>(true))
             {
-                if (go.main.simulationSpace != ParticleSystemSimulationSpace.World) continue;
-                // Just disable don't destroy I reckon??
-                go.gameObject.SetActive(false);
-                _disabledGameObjects.Add(go.gameObject);
+                if (particle.main.simulationSpace != ParticleSystemSimulationSpace.World)
+                {
+                    continue;
+                }
+
+                var go = particle.gameObject;
+
+                if (!go.activeSelf) // Don't accidentally enable object that is INTENTIONALLY disabled by the Saber Creator
+                {
+                    continue;
+                }
+
+                go.SetActive(false);
+                _disabledGameObjects.Add(go);
             }
         }
 
