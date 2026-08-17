@@ -2,9 +2,11 @@
     <vertical bg="round-rect-panel" custom-color="$default-panel" pad="3" vertical-fit="PreferredSize">
 
         <!--<slider-setting text='Width' get-event='update-props' apply-on-change='true' min='0' max='30' increment='0.1' />-->
-        <slider-setting value="RotationAmount" text='Rotation' get-event='update-props' apply-on-change='true' min='0' max='360' increment='1'/>
-        <slider-setting value='OffsetAmount' text='Z Offset' get-event='update-props' apply-on-change='true' min='-0.2' max='0.2' increment='0.01'/>
-        <slider-setting value='SaberLength' text="Saber Length (doesn't modify hitbox)" get-event='update-props' apply-on-change='true' min='0.1'
+        <slider-setting value="RotationAmount" text='Rotation' hover-hint="Adjusts the rotation of the saber" get-event='update-props' apply-on-change='true' min='0' max='360' increment='1'/>
+        <slider-setting value='OffsetAmount' text='Z Offset' hover-hint="Adjusts the Z position (focus point) of the saber" get-event='update-props' apply-on-change='true' min='-0.2' max='0.2' increment='0.01'/>
+        <slider-setting value='SaberLength' text="Saber Length" hover-hint="Adjusts the length of the saber (does not modify hitbox)" get-event='update-props' apply-on-change='true' min='0.1'
                         max='2' increment='0.05'/>
+        <checkbox text='Disable World Particles' hover-hint="Disables world particles for all sabers" value='DisableWorldParticles' apply-on-change='true' get-event='update-props'/>
+
     </vertical>
 </bg>

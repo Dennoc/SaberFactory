@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using SaberFactory.Configuration;
 using SaberFactory.Instances;
 using SaberFactory.Models;
 using SaberFactory.Serialization;
 using SiraUtil.Logging;
 using SiraUtil.Tools;
 using UnityEngine;
+using Zenject;
 
 namespace SaberFactory.Editor
 {
@@ -13,6 +16,8 @@ namespace SaberFactory.Editor
     /// </summary>
     internal class EditorInstanceManager
     {
+        [Inject] private PluginConfig _config = null;
+        
         public AssetTypeDefinition SelectedDefinition { get; }
         public SaberInstance CurrentSaber { get; private set; }
         public BasePieceInstance CurrentPiece { get; private set; }
@@ -39,6 +44,31 @@ namespace SaberFactory.Editor
             };
         }
 
+        public void SetShowWorldParticles(bool show)
+        {
+            if (show)
+            {
+                foreach (var go in _disabledGameObjects)
+                {
+                    go.gameObject.SetActive(true);
+                }
+
+                return;
+            }
+
+            var gos = CurrentSaber.GameObject.GetComponentsInChildren<ParticleSystem>();
+            foreach (var go in gos)
+            {
+                if (go.main.simulationSpace != ParticleSystemSimulationSpace.World) continue;
+                // Just disable don't destroy I reckon??
+                go.gameObject.SetActive(false);
+                _disabledGameObjects.Add(go.gameObject);
+            }
+        }
+
+
+        private readonly List<GameObject> _disabledGameObjects = new List<GameObject>();
+
         public event Action<SaberInstance> OnSaberInstanceCreated;
         public event Action<BasePieceInstance> OnPieceInstanceCreated;
         public event Action<ModelComposition> OnModelCompositionSet;
@@ -60,6 +90,8 @@ namespace SaberFactory.Editor
             _saberSet.SetModelComposition(CurrentModelComposition);
             OnModelCompositionSet?.Invoke(CurrentModelComposition);
             _logger.Info($"Selected Saber: {composition?.ListName}");
+
+            SetShowWorldParticles(!(_config is { DisableWorldParticles: true }));
         }
 
         public void Refresh()

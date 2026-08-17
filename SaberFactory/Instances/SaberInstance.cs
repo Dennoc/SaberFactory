@@ -110,6 +110,17 @@ namespace SaberFactory.Instances
             }
         }
 
+        public void DisableWorldParticles()
+        {
+            foreach (var ps in GameObject.GetComponentsInChildren<ParticleSystem>())
+            {
+                if (ps.main.simulationSpace == ParticleSystemSimulationSpace.World)
+                {
+                    ps.gameObject.SetActive(false);
+                }
+            }
+        }
+
         private void InitializeEvents()
         {
             Events = new List<PartEvents>();
