@@ -16,7 +16,7 @@ jobs:
     
     strategy:
       fail-fast: false
-      max-parallel: 1
+      max-parallel: 2 # Sadly have to set this to either 1 or 2 because else github rate limits when downloading the Heck dependency
       matrix:
         game-version:
           - 1.42.0 # Currently pinning to this version because 1.42.1 isn't available yet, but shouldn't really break, because its just a minor version release
@@ -51,5 +51,5 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: SaberFactory-${{ matrix.game-version }}-${{ github.sha }}
+        name: SaberFactory-bs${{ matrix.game-version }}-${{ github.sha }}
         path: ./SaberFactory/bin/Release/Final
