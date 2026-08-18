@@ -1,4 +1,5 @@
-﻿using SaberFactory.Editor;
+﻿using SaberFactory.Configuration;
+using SaberFactory.Editor;
 using SaberFactory.Helpers;
 using SaberFactory.Instances.CustomSaber;
 using SaberFactory.Instances.Setters;
@@ -59,7 +60,18 @@ namespace SaberFactory.UI.CustomSaber.Views
             set => _editorInstanceManager.CurrentSaber?.SetSaberLength(value);
         }
 
+        public bool DisableWorldParticles
+        {
+            get => _config.DisableWorldParticles;
+            set
+            {
+                _editorInstanceManager.SetShowWorldParticles(!value);
+                _config.DisableWorldParticles = value;
+            }
+        }
+
         [Inject] private readonly EditorInstanceManager _editorInstanceManager = null;
+        [Inject] private readonly PluginConfig _config = null;
 
         private TransformDataSetter _transformDataSetter;
 

@@ -49,7 +49,10 @@ namespace SaberFactory.Configuration
 
         // A multiplier for the sounds a saber may have (e.g. plasma katana startup sound)
         public float SaberAudioVolumeMultiplier { get; set; } = 1;
-
+        
+        // Whether World Particle GameObjects should be disabled (Requested by Lumebyte)
+        public bool DisableWorldParticles { get; set; } = false;
+        
         // First color of the gradiant of items in a the saber list
         [UseConverter(typeof(HexColorConverter))]
         public Color ListCellColor0 { get; set; } = new Color(0.047f, 0.471f, 0.949f);
