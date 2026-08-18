@@ -19,9 +19,9 @@ jobs:
       max-parallel: 1
       matrix:
         game-version:
-          - 1.39.1 
           - 1.42.0 # Currently pinning to this version because 1.42.1 isn't available yet, but shouldn't really break, because its just a minor version release
           - 1.40.8
+          - 1.39.1 
     
     steps:
     - name: Checkout
@@ -42,7 +42,7 @@ jobs:
         path: './Refs'
         additional-sources: '["Aeroluna/Heck"]'
         game-version: ${{ matrix.game-version }}
-        additional-dependencies: '{"Heck":"^1.8.2", "SiraUtil":"^3.2.1", "BeatSaberMarkupLanguage":"^1.12.5"}'
+        additional-dependencies: '{"Heck":"^1.8.2", "SiraUtil":"^3.1.14", "BeatSaberMarkupLanguage":"^1.12.4"}'
     - name: Build
       id: Build
       env:
