@@ -25,7 +25,7 @@ namespace SaberFactory.UI.Lib.BSML
         private static readonly Color HeartColor = new Color(0.921f, 0.360f, 0.321f);
 
         private static readonly Sprite FolderSprite =
-            Utilities.FindSpriteInAssembly("SaberFactory.Resources.Icons.folder.png");
+            TextureUtilities.LoadSpriteFromResource("SaberFactory.Resources.Icons.folder.png");
 
         public ListStyle Style
         {

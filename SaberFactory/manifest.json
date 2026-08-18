@@ -5,10 +5,10 @@
   "author": "Toni Macaroni",
   "version": "2.5.6",
   "description": "A highly customizable saber mod",
-  "gameVersion": "1.40.8",
+  "gameVersion": "1.42.1",
   "dependsOn": {
-    "BSIPA": "^4.3.6",
-    "SiraUtil": "^3.2.1",
-    "BeatSaberMarkupLanguage": "^1.12.5"
+    "BSIPA": "^4.3.7",
+    "SiraUtil": "^3.3.1",
+    "BeatSaberMarkupLanguage": "^1.14.1"
   }
 }

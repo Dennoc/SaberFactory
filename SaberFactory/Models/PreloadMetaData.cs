@@ -1,4 +1,5 @@
 ﻿using BeatSaberMarkupLanguage;
+using SaberFactory.Helpers;
 using SaberFactory.Loaders;
 using SaberFactory.Misc;
 using SaberFactory.UI;
@@ -160,7 +161,7 @@ namespace SaberFactory.Models
 
         private Texture2D LoadTexture()
         {
-            return _coverData == null ? null : Utilities.LoadTextureRaw(_coverData);
+            return _coverData == null ? null : TextureUtilities.LoadTextureRaw(_coverData);
         }
 
         private Sprite LoadSprite()
