@@ -35,6 +35,17 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <DefineConstants>$(DefineConstants)TRACE;ENABLE_PROFILER</DefineConstants>
     </PropertyGroup>
+    <PropertyGroup>
+        <BS_DEFINE Condition="'$(BS_DEFINE)' == ''">V_1_42_0</BS_DEFINE> 
+        <!--This defaults the beat saber definition version to 1_42_0-->
+        <!--Change this if you are developing for another Version-->
+        <DefineConstants>$(DefineConstants);$(BS_DEFINE)</DefineConstants>
+    </PropertyGroup>
+
+    <Target Name="LogBeatSaberVersion" BeforeTargets="Build">
+        <Message Importance="high" Text="Building for Beat Saber version: $(BS_DEFINE)" />
+    </Target>
+    
     <ItemGroup>
         <None Remove="Resources\Icons\folder.png" />
         <None Remove="Resources\Icons\transform-icon.png" />
