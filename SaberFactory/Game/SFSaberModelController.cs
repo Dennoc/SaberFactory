@@ -64,6 +64,11 @@ namespace SaberFactory.Game
             SetColor(_saberColor ?? colorManager.ColorForSaberType(_saberInstance.Model.SaberSlot.ToSaberType()));
 
             _eventPlayer?.SetPartEventList(_saberInstance.Events, saber.saberType);
+            
+            if(_pluginConfig.DisableWorldParticles)
+            {
+                _saberInstance.DisableWorldParticles();
+            }
 
             _logger.Info("Instantiated Saber");
         }

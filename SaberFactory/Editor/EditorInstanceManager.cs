@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using SaberFactory.Configuration;
 using SaberFactory.Instances;
 using SaberFactory.Models;
 using SaberFactory.Serialization;
 using SiraUtil.Logging;
 using SiraUtil.Tools;
 using UnityEngine;
+using Zenject;
 
 namespace SaberFactory.Editor
 {
@@ -13,6 +17,8 @@ namespace SaberFactory.Editor
     /// </summary>
     internal class EditorInstanceManager
     {
+        [Inject] private PluginConfig _config = null;
+
         public AssetTypeDefinition SelectedDefinition { get; }
         public SaberInstance CurrentSaber { get; private set; }
         public BasePieceInstance CurrentPiece { get; private set; }
@@ -39,6 +45,44 @@ namespace SaberFactory.Editor
             };
         }
 
+        public void SetShowWorldParticles(bool show)
+        {
+            if (show)
+            {
+                foreach (var go in _disabledGameObjects)
+                {
+                    if (go != null)
+                    {
+                        go.SetActive(true);
+                    }
+                }
+
+                _disabledGameObjects.Clear();
+                return;
+            }
+
+            foreach (var particle in CurrentSaber.GameObject.GetComponentsInChildren<ParticleSystem>(true))
+            {
+                if (particle.main.simulationSpace != ParticleSystemSimulationSpace.World)
+                {
+                    continue;
+                }
+
+                var go = particle.gameObject;
+
+                if (!go.activeSelf) // Don't accidentally enable object that is INTENTIONALLY disabled by the Saber Creator
+                {
+                    continue;
+                }
+
+                go.SetActive(false);
+                _disabledGameObjects.Add(go);
+            }
+        }
+
+
+        private readonly List<GameObject> _disabledGameObjects = new List<GameObject>();
+
         public event Action<SaberInstance> OnSaberInstanceCreated;
         public event Action<BasePieceInstance> OnPieceInstanceCreated;
         public event Action<ModelComposition> OnModelCompositionSet;
@@ -60,6 +104,8 @@ namespace SaberFactory.Editor
             _saberSet.SetModelComposition(CurrentModelComposition);
             OnModelCompositionSet?.Invoke(CurrentModelComposition);
             _logger.Info($"Selected Saber: {composition?.ListName}");
+
+            SetShowWorldParticles(!(_config is { DisableWorldParticles: true }));
         }
 
         public void Refresh()
@@ -132,6 +178,7 @@ namespace SaberFactory.Editor
         {
             CurrentModelComposition?.DestroyAdditionalInstances();
             CurrentSaber?.Destroy();
+            _disabledGameObjects.Clear();
             CurrentSaber = null;
             CurrentPiece = null;
         }
