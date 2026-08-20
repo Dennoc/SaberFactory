@@ -43,6 +43,14 @@ namespace SaberFactory
 
             zenjector.UseLogger(logger);
             zenjector.UseHttpService();
+            
+            #if V_1_42_0
+                logger.Info("Running Saber Factory For Version 1.42.0");
+            #elif V_1_40_8
+                logger.Info("Running Saber Factory For Version 1.40.8");
+            #elif V_1_39_1
+                logger.Info("Running Saber Factory For Version 1.39.1");
+            #endif
 
             zenjector.Install<PluginAppInstaller>(Location.App, logger, pluginConfig, metadata);
             zenjector.Install<PluginMenuInstaller>(Location.Menu);

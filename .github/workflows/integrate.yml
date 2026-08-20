@@ -13,6 +13,24 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      max-parallel: 2 # Sadly have to set this to either 1 or 2 because else github rate limits when downloading the Heck dependency
+      matrix: # Currently pinning to this version because 1.42.1 isn't available yet, but shouldn't really break, because its just a minor version release
+        include:
+          - bs-define: V_1_42_0
+            game-version: 1.42.0
+
+          - bs-define: V_1_40_8
+            game-version: 1.40.8
+
+          - bs-define: V_1_39_1
+            game-version: 1.39.1
+    
+    env:
+      BEAT_SABER_VERSION: ${{ matrix.game-version }}
+    
     steps:
     - name: Checkout
       uses: actions/checkout@v7
@@ -23,22 +41,23 @@ jobs:
         dotnet-version: '10.0.x'
     - name: Initialize modding environment
       uses: beat-forge/init-beatsaber@v1
+      with:
+        version: ${{ matrix.game-version }}
     - name: Download Beatmods dependencies
       uses: Aeroluna/download-beatmods-deps@main
       with:
         project-path: 'SaberFactory/SaberFactory.csproj'
         path: './Refs'
-        game-version: 1.40.8
-        additional-dependencies: '{"Heck":"^1.7.14+1.40.3", "SiraUtil":"^3.2.1", "BeatSaberMarkupLanguage":"^1.12.5"}'
+        additional-sources: '["Aeroluna/Heck"]'
+        game-version: ${{ matrix.game-version }}
+        additional-dependencies: '{"Heck":"^1.8.2", "SiraUtil":"^3.1.14", "BeatSaberMarkupLanguage":"^1.12.4"}'
     - name: Build
       id: Build
       env:
         FrameworkPathOverride: /usr/lib/mono/4.7.2-api
-      run: |
-        dotnet build --configuration Release
-        echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      run: dotnet build --configuration Release -p:BS_DEFINE=${{ matrix.bs-define }}
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: SaberFactory-${{ steps.Build.outputs.sha_short }}
+        name: SaberFactory-bs${{ matrix.game-version }}-${{ github.sha }}
         path: ./SaberFactory/bin/Release/Final
