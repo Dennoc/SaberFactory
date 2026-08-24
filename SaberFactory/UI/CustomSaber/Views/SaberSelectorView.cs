@@ -112,11 +112,20 @@ namespace SaberFactory.UI.CustomSaber.Views
             _dirManager = new ListItemDirectoryManager(_mainAssetStore.AdditionalCustomSaberFolders);
             _saberList.OnItemSelected += SaberSelected;
             _saberList.OnCategorySelected += DirectorySelected;
+            #if V_1_29_1
+            _searchKeyboard.keyboard.EnterPressed += async search =>
+            {
+                _filter = search;
+                await ShowSabers(true);
+            };
+            #else
             _searchKeyboard.Keyboard.EnterPressed += async search =>
             {
                 _filter = search;
                 await ShowSabers(true);
             };
+            #endif
+            
             _listTitle = "<color=#2f6594>Saber Factory " + _metadata.HVersion + "</color>";
             _saberList.SetText(_listTitle);
             await LoadSabers();
@@ -305,7 +314,11 @@ namespace SaberFactory.UI.CustomSaber.Views
         [UIAction("open-search-keyboard")]
         private void OpenSearchKeyboard()
         {
+            #if V_1_29_1
+            _searchKeyboard.modalView.Show(true, true);
+            #else
             _searchKeyboard.ModalView.Show(true, true);
+            #endif
         }
 
         [UIAction("toggled-grab-saber")]

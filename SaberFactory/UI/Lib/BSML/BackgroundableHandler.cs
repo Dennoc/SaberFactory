@@ -19,11 +19,36 @@ namespace SaberFactory.UI.Lib.BSML
     {
         public override Dictionary<string, string[]> Props => new Dictionary<string, string[]>
         {
-            { "border", new[] { "border" } },
-            { "raycast", new[] { "raycast", "block" } },
-            { "skew", new[] { "skew" } },
-            { "customColor", new[] { "custom-color" } },
-            { "customBg", new[] { "custom-bg" } }
+            {
+                "border", new[]
+                {
+                    "border"
+                }
+            },
+            {
+                "raycast", new[]
+                {
+                    "raycast", "block"
+                }
+            },
+            {
+                "skew", new[]
+                {
+                    "skew"
+                }
+            },
+            {
+                "customColor", new[]
+                {
+                    "custom-color"
+                }
+            },
+            {
+                "customBg", new[]
+                {
+                    "custom-bg"
+                }
+            }
         };
 
         public override Dictionary<string, Action<Backgroundable, string>> Setters => new Dictionary<string, Action<Backgroundable, string>>();
@@ -48,6 +73,46 @@ namespace SaberFactory.UI.Lib.BSML
         public override void HandleType(BSMLParser.ComponentTypeWithData componentType, BSMLParserParams parserParams)
         {
             base.HandleType(componentType, parserParams);
+            #if V_1_29_1
+            var backgroundable = (Backgroundable)componentType.component;
+
+            if (componentType.data.TryGetValue("customBg", out var customBg))
+            {
+                InitSprite();
+                var imageview = GetOrAddImageView(backgroundable);
+                if (imageview != null)
+                {
+                    imageview.overrideSprite = _bgSprite;
+                    backgroundable.background = imageview;
+                }
+            }
+
+            if (componentType.data.TryGetValue("customColor", out var customColor))
+            {
+                TrySetBackgroundColor(backgroundable, customColor);
+            }
+
+            if (componentType.data.TryGetValue("border", out var borderAttr))
+            {
+                AddBorder(backgroundable.gameObject, borderAttr == "square");
+            }
+
+            if (componentType.data.TryGetValue("raycast", out var raycastAttr))
+            {
+                if (backgroundable.background != null)
+                {
+                    backgroundable.background.raycastTarget = bool.Parse(raycastAttr);
+                }
+            }
+
+            if (componentType.data.TryGetValue("skew", out var skew))
+            {
+                if (backgroundable.background is ImageView imageView)
+                {
+                    imageView.SetSkew(float.Parse(skew));
+                }
+            }
+            #else
             var backgroundable = (Backgroundable)componentType.Component;
 
             if (componentType.Data.TryGetValue("customBg", out var customBg))
@@ -86,6 +151,8 @@ namespace SaberFactory.UI.Lib.BSML
                     imageView.SetSkew(float.Parse(skew));
                 }
             }
+            #endif
+
         }
 
         private void AddBorder(GameObject go, bool squareSprite = false)
@@ -186,7 +253,12 @@ namespace SaberFactory.UI.Lib.BSML
                 return;
             }
 
+
+            #if V_1_29_1
+            background.background.color = color;
+            #else
             background.Background.color = color;
+            #endif
         }
     }
 }

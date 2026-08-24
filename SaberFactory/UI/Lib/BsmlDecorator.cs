@@ -75,7 +75,7 @@ namespace SaberFactory.UI.Lib
                 _bsmlCache.Add(resourceName, cachedContent);
             }
 
-            return BSMLParser.Instance.Parse(cachedContent, parent, host);
+            return BSMLParserWrapper.Instance.Parse(cachedContent, parent, host);
         }
 
         public BSMLParserParams ParseFromResource(string resourceName, GameObject parent, object host)
@@ -92,13 +92,13 @@ namespace SaberFactory.UI.Lib
                 _bsmlCache.Add(resourceName, cachedContent);
             }
 
-            return BSMLParser.Instance.Parse(cachedContent, parent, host);
+            return BSMLParserWrapper.Instance.Parse(cachedContent, parent, host);
         }
 
         public BSMLParserParams ParseFromString(string content, GameObject parent, object host)
         {
             content = Process(content);
-            return BSMLParser.Instance.Parse(content, parent, host);
+            return BSMLParserWrapper.Instance.Parse(content, parent, host);
         }
 
         public void ProcessDoc(XmlDocument doc)

@@ -31,7 +31,11 @@ namespace SaberFactory.UI.Lib.PropCells
                 _backgroundImage.color = bgColor;
             }
 
+            #if V_1_29_1
+            var positioner = _colorSetting.modalColorPicker.gameObject.AddComponent<ModalPositioner>();
+            #else
             var positioner = _colorSetting.ModalColorPicker.gameObject.AddComponent<ModalPositioner>();
+            #endif
             positioner.SetPosition(new Vector2(11, 10));
         }
 

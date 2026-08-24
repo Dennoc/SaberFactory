@@ -1,6 +1,7 @@
 ﻿using System;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.MenuButtons;
+using SaberFactory.Helpers;
 using Zenject;
 
 namespace SaberFactory.UI.Lib
@@ -16,15 +17,15 @@ namespace SaberFactory.UI.Lib
 
         public void Dispose()
         {
-            if ((MenuButtons.Instance != null) && (BSMLParser.Instance != null))
+            if ((MenuButtonsWrapper.Instance != null) && (BSMLParserWrapper.Instance != null))
             {
-                MenuButtons.Instance.UnregisterButton(_menuButton);
+                MenuButtonsWrapper.Instance.UnregisterButton(_menuButton);
             }
         }
 
         public void Initialize()
         {
-            MenuButtons.Instance.RegisterButton(_menuButton);
+            MenuButtonsWrapper.Instance.RegisterButton(_menuButton);
         }
 
         protected virtual void OnClick()

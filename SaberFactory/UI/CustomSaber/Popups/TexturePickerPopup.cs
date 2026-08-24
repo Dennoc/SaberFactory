@@ -53,8 +53,15 @@ namespace SaberFactory.UI.CustomSaber.CustomComponents
                 cells.Add(cell);
             }
 
+            #if V_1_29_1
+            _itemList.data = cells;
+            _itemList.tableView.ReloadData();
+            #else
             _itemList.Data = cells;
             _itemList.TableView.ReloadData();
+            #endif
+
+
         }
 
         [UIAction("click-cancel")]

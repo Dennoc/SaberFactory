@@ -22,6 +22,22 @@ namespace SaberFactory.UI.Lib.PropCells
 
             OnChangeCallback = data.ChangedCallback;
 
+            #if V_1_29_1
+            if (data.AddtionalData is Vector2 minMax && val > minMax.x && val < minMax.y)
+            {
+                _incrementSetting.minValue = minMax.x;
+                _incrementSetting.maxValue = minMax.y;
+
+                // 1% of total, also idk if 0.01f is better or division by 100?
+                _incrementSetting.increments = (minMax.y - minMax.x) * 0.01f;
+            }
+            else
+            {
+                _incrementSetting.minValue = -1000;
+                _incrementSetting.maxValue = 1000;
+                _incrementSetting.increments = 0.1f;
+            }
+            #else
             if (data.AddtionalData is Vector2 minMax && val > minMax.x && val < minMax.y)
             {
                 _incrementSetting.MinValue = minMax.x;
@@ -36,6 +52,9 @@ namespace SaberFactory.UI.Lib.PropCells
                 _incrementSetting.MaxValue = 1000;
                 _incrementSetting.Increments = 0.1f;
             }
+            #endif
+            
+
 
             _incrementSetting.Value = val;
             _incrementSetting.ReceiveValue();

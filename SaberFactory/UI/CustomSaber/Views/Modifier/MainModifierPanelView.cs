@@ -83,8 +83,15 @@ namespace SaberFactory.UI.CustomSaber.Views.Modifiers
 #pragma warning disable CS0162 // Unreachable code detected
             _modifyableComponentManager = null;
 
+
+            #if V_1_29_1
+            _componentList.data = new List<CustomListTableData.CustomCellInfo>();
+            _componentList.tableView.ReloadData();
+            #else
             _componentList.Data = new List<CustomListTableData.CustomCellInfo>();
             _componentList.TableView.ReloadData();
+            #endif
+
             ClearCurrentView();
             GizmoDrawer.Deactivate();
 #pragma warning restore CS0162 // Unreachable code detected
@@ -94,19 +101,29 @@ namespace SaberFactory.UI.CustomSaber.Views.Modifiers
         {
             var list = new List<CustomListTableData.CustomCellInfo>();
             _items = _modifyableComponentManager.GetAllMods();
-            
+
             foreach (var mod in _items)
             {
                 list.Add(new CustomListTableData.CustomCellInfo(mod.Name, mod.TypeName));
             }
-            
+
+            #if V_1_29_1
+            _componentList.data = list;
+            _componentList.tableView.ReloadData();
+
+            if (_items.Count > 0)
+            {
+                _componentList.tableView.SelectCellWithIdx(0, true);
+            }
+            #else
             _componentList.Data = list;
             _componentList.TableView.ReloadData();
-            
+
             if (_items.Count > 0)
             {
                 _componentList.TableView.SelectCellWithIdx(0, true);
             }
+            #endif
         }
 
         private void ClearCurrentView()
@@ -124,7 +141,7 @@ namespace SaberFactory.UI.CustomSaber.Views.Modifiers
             {
                 return;
             }
-            
+
             _currentItem = _items[idx];
             ClearCurrentView();
             _currentItem.ParserParams = _decorator.ParseFromString(_currentItem.DrawUi(), _container, _currentItem);
@@ -138,16 +155,16 @@ namespace SaberFactory.UI.CustomSaber.Views.Modifiers
             {
                 return;
             }
-            
+
             if (_modifyableComponentManager is null)
             {
                 return;
             }
-            
+
             Debug.LogWarning($"Resetting {_currentItem.Id}");
-            
+
             _modifyableComponentManager.Reset(_currentItem.Id);
-            
+
             ReloadSaber();
         }
 
@@ -158,16 +175,16 @@ namespace SaberFactory.UI.CustomSaber.Views.Modifiers
             {
                 return;
             }
-            
+
             if (_modifyableComponentManager is null)
             {
                 return;
             }
-            
+
             Debug.LogWarning("Resetting all");
-            
+
             _modifyableComponentManager.ResetAll();
-            
+
             ReloadSaber();
         }
 
@@ -185,7 +202,7 @@ namespace SaberFactory.UI.CustomSaber.Views.Modifiers
             {
                 return;
             }
-            
+
             _currentItem.OnTick();
         }
     }
