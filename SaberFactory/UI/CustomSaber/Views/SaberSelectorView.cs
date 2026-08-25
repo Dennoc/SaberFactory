@@ -64,7 +64,6 @@ namespace SaberFactory.UI.CustomSaber.Views
         [Inject] private readonly MainAssetStore _mainAssetStore = null;
         [Inject(Id = nameof(SaberFactory))] private readonly PluginMetadata _metadata = null;
         [Inject] private readonly PluginConfig _pluginConfig = null;
-        [Inject] private readonly RemotePartRetriever _remotePartRetriever = null;
         [Inject] private readonly SaberFileWatcher _saberFileWatcher = null;
         [Inject] private readonly SaberSet _saberSet = null;
         private ModelComposition _currentComposition;
@@ -126,7 +125,6 @@ namespace SaberFactory.UI.CustomSaber.Views
         public async Task LoadSabers()
         {
             _loadingPopup.Show();
-            await _remotePartRetriever.WaitForFinish();
             await _mainAssetStore.LoadAllMetaAsync(_pluginConfig.AssetType);
             await ShowSabers(false, 500);
             _loadingPopup.Hide();
@@ -163,28 +161,6 @@ namespace SaberFactory.UI.CustomSaber.Views
 
             var items = new List<ICustomListItem>(metaEnumerable);
             var loadedNames = items.Select(x => x.ListName).ToList();
-
-            var addedDownloadables = 0;
-
-            // Show downloadable sabers
-            if (_pluginConfig.ShowDownloadableSabers && _remotePartRetriever.RetrievingStatus == RemotePartRetriever.Status.Success)
-            {
-                var idx = items.Count(x => x.IsFavorite);
-
-                // if the saber isn't aleady present
-                // add the downloadable option
-                foreach (var remotePart in _remotePartRetriever.RemoteSabers)
-                {
-                    if (!loadedNames.Contains(remotePart.ListName))
-                    {
-                        items.Insert(idx, remotePart);
-                        addedDownloadables++;
-                    }
-                }
-            }
-
-            // If there are only downloadable sabers present show the modelsaber hint
-            ShowDownloadSabersPopup = items.Count() <= addedDownloadables;
 
             // Fill the saber list with the currently selected directory
             _saberList.SetItems(_dirManager.Process(items));
@@ -230,25 +206,7 @@ namespace SaberFactory.UI.CustomSaber.Views
                 var relativePath = PathTools.ToRelativePath(metaData.AssetMetaPath.Path);
                 _currentComposition = await _mainAssetStore[relativePath];
             }
-            else if (item is RemoteLocationPart remotePart)
-            {
-                _loadingPopup.Show($"Downloading {remotePart.ListName}...");
-                var result = await remotePart.Download(CancellationToken.None);
-                if (result == null || !result.Item1)
-                {
-                    _loadingPopup.Hide();
-                    Logger.Error("Couldn't download remote saber: " + remotePart.RemoteLocation);
-                    return;
-                }
 
-                reloadList = true;
-                var relPath = result.Item2;
-                _currentComposition =
-                    await _mainAssetStore.CreateMetaData(
-                        new AssetMetaPath(new FileInfo(Path.Combine(UnityGame.InstallPath, relPath))));
-                _remotePartRetriever.RemoveSaber(remotePart);
-                _loadingPopup.Hide();
-            }
             else if (item is ModelComposition comp)
             {
                 _currentComposition = comp;
