@@ -80,7 +80,8 @@
                         show-line='false'
                         text="Clear"
                         hover-hint='Clear'
-                        hovered-color='#3486ebff'/>
+                        hovered-color='#3486ebff'
+                        active="~should-show-clear"/>
             </horizontal>
         </vertical>
     </horizontal>

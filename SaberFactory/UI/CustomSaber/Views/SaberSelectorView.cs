@@ -77,9 +77,9 @@ namespace SaberFactory.UI.CustomSaber.Views
         private ChooseSort.ESortMode _sortMode = ChooseSort.ESortMode.Name;
         private string _filter = string.Empty;
 
-        [UIComponent("search-keyboard")] private ModalKeyboard _searchKeyboard = null;
-
-        private bool IsSearching => !string.IsNullOrEmpty(_filter);
+        [UIComponent("search-keyboard")] private readonly ModalKeyboard _searchKeyboard = null;
+        
+        [UIValue("should-show-clear")] private bool IsSearching => !string.IsNullOrEmpty(_filter);
 
         public ENavigationCategory Category => ENavigationCategory.Saber;
 
@@ -117,12 +117,14 @@ namespace SaberFactory.UI.CustomSaber.Views
             {
                 _filter = search;
                 await ShowSabers(true);
+                OnPropertyChanged(nameof(IsSearching));
             };
             #else
             _searchKeyboard.Keyboard.EnterPressed += async search =>
             {
                 _filter = search;
                 await ShowSabers(true);
+                OnPropertyChanged(nameof(IsSearching));
             };
             #endif
             
@@ -332,6 +334,7 @@ namespace SaberFactory.UI.CustomSaber.Views
         {
             _filter = string.Empty;
             await ShowSabers(true);
+            OnPropertyChanged(nameof(IsSearching));
         }
 
         [UIAction("clicked-reload")]
