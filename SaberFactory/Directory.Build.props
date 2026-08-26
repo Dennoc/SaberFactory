@@ -1,17 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- This file contains project properties used by the build. -->
 <Project>
-    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-        <DisableCopyToPlugins>true</DisableCopyToPlugins>
-        <DisableZipRelease>true</DisableZipRelease>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(NCrunch)' == '1'">
-        <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
-        <DisableCopyToPlugins>true</DisableCopyToPlugins>
-        <DisableZipRelease>true</DisableZipRelease>
-    </PropertyGroup>
-    <ItemGroup>
-        <SourceRoot Include="$(MSBuildThisFileDirectory)/"/>
-    </ItemGroup>
+	
+<!-- Plugin Metadata -->
+	<PropertyGroup>
+		<PluginId>SaberFactory</PluginId>
+		<PluginName>Saber Factory</PluginName>
+		<Authors>Toni Macaroni</Authors>
+		<Version>2.5.7</Version>
+		<GameVersion>1.42.0</GameVersion>
+		<Description>A highly customizable saber mod.</Description>
+	</PropertyGroup>
+
+	<!-- Plugin Dependencies -->
+	<ItemGroup>
+		<DependsOn Include="BSIPA" Version="^4.3.6"/>
+		<DependsOn Condition="'$(BS_DEFINE)' == 'V_1_29_1'" Include="BeatSaberMarkupLanguage" Version="^1.6.10"/>
+		<DependsOn Condition="'$(BS_DEFINE)' != 'V_1_29_1'" Include="BeatSaberMarkupLanguage" Version="^1.12.4"/>
+		<DependsOn Include="SiraUtil" Version="^3.1.2"/>
+		<DependsOn Include="AssetBundleLoadingTools" Version="^1.1.10"/>
+	</ItemGroup>
+
+	<PropertyGroup>
+		<BSMTProjectType>BSIPA</BSMTProjectType>
+		<GenerateManifest>true</GenerateManifest>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' != 'Release'">
+		<DisableZipRelease>true</DisableZipRelease>
+	</PropertyGroup>
+
 </Project>
+    
+	

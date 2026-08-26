@@ -1,6 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+#if !V_1_29_1
+using AssetBundleLoadingTools.Utilities;
+#endif
+using CustomSaber;
+using HarmonyLib;
+using IPA.Utilities;
 using SaberFactory.DataStore;
 using SaberFactory.Helpers;
 using UnityEngine;
@@ -31,11 +37,61 @@ namespace SaberFactory.Loaders
                 return null;
             }
 
+            #if V_1_29_1
             var result = await Readers.LoadAssetFromAssetBundleAsync<GameObject>(fullPath, "_CustomSaber");
+            #else
+            var result = await Readers.LoadAssetFromAssetBundleSafeAsync<GameObject>(fullPath, "_CustomSaber");
+            #endif
+            
             if (result == null)
             {
                 return null;
             }
+
+
+            #if !V_1_29_1
+            var info = await ShaderRepair.FixShadersOnGameObjectAsync(result.Item1);
+            if (!info.AllShadersReplaced)
+            {
+                Debug.LogWarning($"Missing shader replacement data for {relativePath}:");
+                foreach (var shaderName in info.MissingShaderNames)
+                {
+                    Debug.LogWarning($"\t- {shaderName}");
+                }
+            }
+            #endif
+
+
+            var trailsList = result.Item1.GetComponentsInChildren<CustomTrail>();
+            var matDict = new Dictionary<Material, List<CustomTrail>>();
+
+            foreach (var trail in trailsList)
+            {
+                if (!trail.TrailMaterial)
+                {
+                    continue;
+                }
+
+                if (!matDict.ContainsKey(trail.TrailMaterial))
+                {
+                    matDict.Add(trail.TrailMaterial, new List<CustomTrail>());
+                }
+
+                matDict[trail.TrailMaterial].Add(trail);
+            }
+
+            #if !V_1_29_1
+            foreach (var (mat, trails) in matDict)
+            {
+                var trailInfo = await ShaderRepair.FixShaderOnMaterialAsync(mat);
+
+                if (!trailInfo.AllShadersReplaced)
+                {
+                    Debug.LogWarning("Missing trail shader replacement data. Using default trail");
+                    trails.Do(x => x.TrailMaterial = null);
+                }
+            }
+            #endif
 
             return new StoreAsset(relativePath, result.Item1, result.Item2);
         }
