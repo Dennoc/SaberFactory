@@ -327,6 +327,13 @@ namespace SaberFactory.UI.CustomSaber.Views
             _editor.IsSaberInHand = isOn;
         }
 
+        [UIAction("clear-search")]
+        private async Task ClearSearch()
+        {
+            _filter = string.Empty;
+            await ShowSabers(true);
+        }
+
         [UIAction("clicked-reload")]
         private async void ClickedReload()
         {
