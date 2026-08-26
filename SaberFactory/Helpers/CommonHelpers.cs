@@ -69,6 +69,12 @@ namespace SaberFactory.Helpers
             return default;
         }
 
+        public static bool IsDate(int? day, int? month)
+        {
+            var time = Utils.CanUseDateTimeNowSafely ? DateTime.Now : DateTime.UtcNow;
+            return (!day.HasValue || time.Day == day) && (!month.HasValue || time.Month == month);
+        }
+
         public static async Task WaitForFinish(this ILoadingTask loadingTask)
         {
             if (loadingTask.CurrentTask == null)
@@ -85,31 +91,21 @@ namespace SaberFactory.Helpers
 
             var gameObject = monoBehaviour.gameObject;
             var upgradedDummyComponent = Activator.CreateInstance(upgradingType);
-
-            
-            for (var type = originalType; type != null && type != typeof(MonoBehaviour); type = type.BaseType)
+            foreach (FieldInfo info in originalType.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic))
             {
-                foreach (FieldInfo info in type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly))
-                {
-                    info.SetValue(upgradedDummyComponent, info.GetValue(monoBehaviour));
-                }
+                info.SetValue(upgradedDummyComponent, info.GetValue(monoBehaviour));
             }
 
             UnityEngine.Object.DestroyImmediate(monoBehaviour);
             bool goState = gameObject.activeSelf;
             gameObject.SetActive(false);
             var upgradedMonoBehaviour = gameObject.AddComponent(upgradingType);
-
-            for (var type = upgradingType; type != null && type != typeof(MonoBehaviour); type = type.BaseType)
+            foreach (FieldInfo info in originalType.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic))
             {
-                foreach (FieldInfo info in type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly))
-                {
-                    info.SetValue(upgradedMonoBehaviour, info.GetValue(upgradedDummyComponent));
-                }
+                info.SetValue(upgradedMonoBehaviour, info.GetValue(upgradedDummyComponent));
             }
-
             gameObject.SetActive(goState);
             return upgradedMonoBehaviour;
         }
     }
-} 
+}
