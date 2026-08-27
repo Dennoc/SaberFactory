@@ -21,7 +21,7 @@ namespace SaberFactory.Loaders
         {
             var paths = new HashSet<AssetMetaPath>();
 
-            foreach (var path in dirs.CustomSaberDir.EnumerateFiles("*.saber", SearchOption.AllDirectories))
+            foreach (var path in dirs.CustomSaberDir.EnumerateFiles($"*{HandledExtension}", SearchOption.AllDirectories))
             {
                 paths.Add(new AssetMetaPath(path, dirs.Cache.GetFile(path.Name+".meta").FullName));
             }

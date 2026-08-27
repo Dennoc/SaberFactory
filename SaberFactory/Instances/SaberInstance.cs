@@ -9,6 +9,7 @@ using SaberFactory.Installers;
 using SaberFactory.Instances.CustomSaber;
 using SaberFactory.Instances.PostProcessors;
 using SaberFactory.Instances.Trail;
+using SaberFactory.Instances.Whacker;
 using SaberFactory.Models;
 using SiraUtil.Logging;
 using UnityEngine;
@@ -136,9 +137,20 @@ namespace SaberFactory.Instances
 
         private void SetupTrailData()
         {
-            if (GetCustomSaber(out var customsaber))
+            if (PieceCollection.TryGetPiece(
+                AssetTypeDefinition.CustomSaber,
+                out var instance))
             {
-                return;
+                switch (instance)
+                {
+                    case CustomSaberInstance customSaber:
+                        _instanceTrailData = customSaber.InstanceTrailData;
+                        return;
+
+                    case WhackerInstance whacker:
+                        _instanceTrailData = whacker.InstanceTrailData;
+                        return;
+                }
             }
 
             // TODO: Setup sf trail data
@@ -216,10 +228,12 @@ namespace SaberFactory.Instances
 
         private bool GetCustomSaber(out CustomSaberInstance customSaberInstance)
         {
-            if (PieceCollection.TryGetPiece(AssetTypeDefinition.CustomSaber, out var instance))
+            if (PieceCollection.TryGetPiece(
+                AssetTypeDefinition.CustomSaber,
+                out var instance))
             {
                 customSaberInstance = instance as CustomSaberInstance;
-                return true;
+                return customSaberInstance != null;
             }
 
             customSaberInstance = null;

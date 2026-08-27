@@ -153,5 +153,25 @@ namespace SaberFactory.Helpers
             return new Tuple<T, AssetBundle>(asset, bundle);
         }
         #endif
+        
+                #if !V_1_29_1
+        public static async Task<Tuple<T, AssetBundle>> LoadAssetFromAssetBundleSafeAsync<T>(byte[] bundleData, string assetName) where T : Object
+        {
+            var bundle = await AssetBundleExtensions.LoadFromMemoryAsync(bundleData);
+            if (!bundle)
+            {
+                return null;
+            }
+
+            var asset = await AssetBundleExtensions.LoadAssetAsync<T>(bundle, assetName);
+            if (!asset)
+            {
+                bundle.Unload(true);
+                return null;
+            }
+
+            return new Tuple<T, AssetBundle>(asset, bundle);
+        }
+        #endif
     }
 }

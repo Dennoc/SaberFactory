@@ -8,6 +8,7 @@ using SaberFactory.Helpers;
 using SaberFactory.Loaders;
 using SaberFactory.Models;
 using SaberFactory.Models.CustomSaber;
+using SaberFactory.Models.Whacker;
 using SiraUtil.Logging;
 using SiraUtil.Tools;
 using UnityEngine;
@@ -27,8 +28,8 @@ namespace SaberFactory.DataStore
 
         private readonly PluginConfig _config;
 
-        private readonly CustomSaberAssetLoader _customSaberAssetLoader;
-        private readonly CustomSaberModelLoader _customSaberModelLoader;
+        private readonly Dictionary<string, (AssetBundleLoader, IStoreAssetParser)> _assetBundleLoaders;
+        
         private readonly SiraLog _logger;
         private readonly Dictionary<string, PreloadMetaData> _metaData;
 
@@ -38,16 +39,19 @@ namespace SaberFactory.DataStore
         private MainAssetStore(
             PluginConfig config,
             SiraLog logger,
-             
             CustomSaberModelLoader customSaberModelLoader,
+            WhackerModelLoader whackerModelLoader,
             PluginDirectories pluginDirs)
         {
             _config = config;
             _logger = logger;
             _pluginDirs = pluginDirs;
 
-            _customSaberAssetLoader = new CustomSaberAssetLoader();
-            _customSaberModelLoader = customSaberModelLoader;
+            _assetBundleLoaders = new Dictionary<string, (AssetBundleLoader, IStoreAssetParser)>
+            {
+                [".saber"] = (new CustomSaberAssetLoader(), customSaberModelLoader),
+                [".whacker"] = (new WhackerAssetLoader(), whackerModelLoader),
+            };
 
             _modelCompositions = new Dictionary<string, ModelComposition>();
             _metaData = new Dictionary<string, PreloadMetaData>();
@@ -86,13 +90,25 @@ namespace SaberFactory.DataStore
         internal async Task LoadAllMetaAsync(EAssetTypeConfiguration assetType)
         {
             await LoadAllCustomSaberMetaDataAsync();
+            await LoadAllWhackerMetaDataAsync();
         }
 
         public async Task LoadAllCustomSaberMetaDataAsync()
         {
             if (CurrentTask == null)
             {
-                CurrentTask = LoadAllMetaDataForLoader(_customSaberAssetLoader, true);
+                CurrentTask = LoadAllMetaDataForLoader(GetLoaderAndCreatorForCurrentSystem("*.saber").loader, true);
+            }
+
+            await CurrentTask;
+            CurrentTask = null;
+        }
+        
+        public async Task LoadAllWhackerMetaDataAsync()
+        {
+            if (CurrentTask == null)
+            {
+                CurrentTask = LoadAllMetaDataForLoader(GetLoaderAndCreatorForCurrentSystem("*.whacker").loader, true);
             }
 
             await CurrentTask;
@@ -261,15 +277,19 @@ namespace SaberFactory.DataStore
             }
         }
 
-        private (AssetBundleLoader loader, IStoreAssetParser creator) GetLoaderAndCreatorForCurrentSystem()
+
+        private (AssetBundleLoader loader, IStoreAssetParser creator) GetLoaderAndCreatorForCurrentSystem(string relativePath)
         {
-            //TODO: Switch for implementation
-            return (_customSaberAssetLoader, _customSaberModelLoader);
+            var ext = Path.GetExtension(relativePath);
+            _logger.Info($"Getting loader for extension: {ext}");
+            return _assetBundleLoaders.TryGetValue(ext, out var pair)
+                ? pair
+                : _assetBundleLoaders[".saber"];
         }
 
         private async Task<ModelComposition> LoadModelCompositionFromFileAsync(string relativeBundlePath)
         {
-            var (loader, modelCreator) = GetLoaderAndCreatorForCurrentSystem();
+            var (loader, modelCreator) = GetLoaderAndCreatorForCurrentSystem(relativeBundlePath);
 
             var storeAsset = await loader.LoadStoreAssetAsync(relativeBundlePath);
             if (storeAsset == null)
@@ -290,7 +310,7 @@ namespace SaberFactory.DataStore
                 return null;
             }
 
-            var (loader, modelCreator) = GetLoaderAndCreatorForCurrentSystem();
+            var (loader, modelCreator) = GetLoaderAndCreatorForCurrentSystem(saberName);
 
             var storeAsset = await loader.LoadStoreAssetFromBundleAsync(bundle, saberName);
             if (storeAsset == null)
