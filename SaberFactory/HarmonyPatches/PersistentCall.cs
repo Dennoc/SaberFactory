@@ -4,10 +4,7 @@ using HarmonyLib;
 
 namespace SaberFactory.HarmonyPatches
 {
-    /// <summary>
-    /// This patch removes any serialized m_TargetAssemblyTypeName since that field can be used for bad things, potentially including arbitrary code execution.
-    /// See https://blog.includesecurity.com/2021/06/hacking-unity-games-malicious-unity-game-objects/ for details.
-    /// </summary>
+    
     [HarmonyPatch]
     internal class PersistentCall_OnAfterDeserialize
     {
