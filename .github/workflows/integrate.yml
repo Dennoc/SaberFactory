@@ -19,14 +19,21 @@ jobs:
       max-parallel: 2 # Sadly have to set this to either 1 or 2 because else github rate limits when downloading the Heck dependency
       matrix: # Currently pinning to this version because 1.42.1 isn't available yet, but shouldn't really break, because its just a minor version release
         include:
-          - bs-define: V_1_42_0
-            game-version: 1.42.0
-
-          - bs-define: V_1_40_8
-            game-version: 1.40.8
-
-          - bs-define: V_1_39_1
-            game-version: 1.39.1
+              - bs-define: V_1_42_0
+                game-version: 1.42.0
+                additional-deps: '{"Heck":"^1.8.2", "SiraUtil":"^3.1.14", "BeatSaberMarkupLanguage":"^1.12.4"}'
+            
+              - bs-define: V_1_40_8
+                game-version: 1.40.8
+                additional-deps: '{"Heck":"^1.8.2", "SiraUtil":"^3.1.14", "BeatSaberMarkupLanguage":"^1.12.4"}'
+            
+              - bs-define: V_1_39_1
+                game-version: 1.39.1
+                additional-deps: '{"Heck":"^1.8.2", "SiraUtil":"^3.1.14", "BeatSaberMarkupLanguage":"^1.12.4"}'
+            
+              - bs-define: V_1_29_1
+                game-version: 1.29.1
+                additional-deps: '{"Heck":"^1.8.2", "SiraUtil":"^3.1.2", "BeatSaberMarkupLanguage":"^1.6.10"}'
     
     env:
       BEAT_SABER_VERSION: ${{ matrix.game-version }}
@@ -50,7 +57,7 @@ jobs:
         path: './Refs'
         additional-sources: '["Aeroluna/Heck"]'
         game-version: ${{ matrix.game-version }}
-        additional-dependencies: '{"Heck":"^1.8.2", "SiraUtil":"^3.1.14", "BeatSaberMarkupLanguage":"^1.12.4"}'
+        additional-dependencies: ${{ matrix.additional-deps }}
     - name: Build
       id: Build
       env:

@@ -2,7 +2,11 @@
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Tags;
 using HMUI;
+#if V_1_29_1
+using Polyglot;
+#else
 using BGLib.Polyglot;
+#endif
 using SaberFactory.Helpers;
 using TMPro;
 using UnityEngine;
@@ -38,7 +42,11 @@ namespace SaberFactory.UI.Lib.BSML.Tags
 
             var textMesh = button.GetComponentInChildren<TextMeshProUGUI>();
             textMesh.richText = true;
+            #if V_1_29_1
+            externalComponents.components.Add(textMesh);
+            #else
             externalComponents.Components.Add(textMesh);
+            #endif
 
             Object.Destroy(button.transform.Find("Content").GetComponent<LayoutElement>());
 
@@ -46,7 +54,11 @@ namespace SaberFactory.UI.Lib.BSML.Tags
 
             button.gameObject.GetComponent<ButtonStaticAnimations>().TryDestroy();
             var buttonStateColors = button.gameObject.AddComponent<ButtonStateColors>();
+            #if V_1_29_1
+            externalComponents.components.Add(buttonStateColors);
+            #else
             externalComponents.Components.Add(buttonStateColors);
+            #endif
             buttonStateColors.Image = bgImage;
             buttonStateColors.NormalColor = _defaultNormalColor;
             buttonStateColors.HoveredColor = _defaultHoveredColor;
@@ -56,7 +68,11 @@ namespace SaberFactory.UI.Lib.BSML.Tags
                 buttonStateColors.SelectionDidChange;
 
             var buttonImageController = button.gameObject.AddComponent<ButtonImageController>();
+            #if V_1_29_1
+            externalComponents.components.Add(buttonImageController);
+            #else
             externalComponents.Components.Add(buttonImageController);
+            #endif
             buttonImageController.BackgroundImage = bgImage;
             buttonImageController.LineImage = button.transform.Find("Underline").gameObject.GetComponent<ImageView>();
             buttonImageController.ShowLine(false);
@@ -72,7 +88,11 @@ namespace SaberFactory.UI.Lib.BSML.Tags
             var stackLayoutGroup = button.GetComponentInChildren<LayoutGroup>();
             if (stackLayoutGroup != null)
             {
+                #if V_1_29_1
+                externalComponents.components.Add(stackLayoutGroup);
+                #else
                 externalComponents.Components.Add(stackLayoutGroup);
+                #endif
             }
 
             if (!button.gameObject.activeSelf)

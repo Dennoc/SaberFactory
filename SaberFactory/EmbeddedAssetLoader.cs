@@ -11,7 +11,11 @@ namespace SaberFactory
 {
     internal class EmbeddedAssetLoader : IDisposable
     {
+        #if V_1_29_1
+        public static readonly string BUNDLE_PATH = "SaberFactory.Resources.assets.old";
+        #else
         public static readonly string BUNDLE_PATH = "SaberFactory.Resources.assets";
+        #endif
 
         private readonly SiraLog _logger;
         private AssetBundle _assetBundle;

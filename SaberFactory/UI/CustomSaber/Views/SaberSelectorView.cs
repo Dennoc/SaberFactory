@@ -77,9 +77,9 @@ namespace SaberFactory.UI.CustomSaber.Views
         private ChooseSort.ESortMode _sortMode = ChooseSort.ESortMode.Name;
         private string _filter = string.Empty;
 
-        [UIComponent("search-keyboard")] private ModalKeyboard _searchKeyboard = null;
-
-        private bool IsSearching => !string.IsNullOrEmpty(_filter);
+        [UIComponent("search-keyboard")] private readonly ModalKeyboard _searchKeyboard = null;
+        
+        [UIValue("should-show-clear")] private bool IsSearching => !string.IsNullOrEmpty(_filter);
 
         public ENavigationCategory Category => ENavigationCategory.Saber;
 
@@ -112,11 +112,22 @@ namespace SaberFactory.UI.CustomSaber.Views
             _dirManager = new ListItemDirectoryManager(_mainAssetStore.AdditionalCustomSaberFolders);
             _saberList.OnItemSelected += SaberSelected;
             _saberList.OnCategorySelected += DirectorySelected;
+            #if V_1_29_1
+            _searchKeyboard.keyboard.EnterPressed += async search =>
+            {
+                _filter = search;
+                await ShowSabers(true);
+                OnPropertyChanged(nameof(IsSearching));
+            };
+            #else
             _searchKeyboard.Keyboard.EnterPressed += async search =>
             {
                 _filter = search;
                 await ShowSabers(true);
+                OnPropertyChanged(nameof(IsSearching));
             };
+            #endif
+            
             _listTitle = "<color=#2f6594>Saber Factory " + _metadata.HVersion + "</color>";
             _saberList.SetText(_listTitle);
             await LoadSabers();
@@ -305,13 +316,25 @@ namespace SaberFactory.UI.CustomSaber.Views
         [UIAction("open-search-keyboard")]
         private void OpenSearchKeyboard()
         {
+            #if V_1_29_1
+            _searchKeyboard.modalView.Show(true, true);
+            #else
             _searchKeyboard.ModalView.Show(true, true);
+            #endif
         }
 
         [UIAction("toggled-grab-saber")]
         private void ToggledGrabSaber(bool isOn)
         {
             _editor.IsSaberInHand = isOn;
+        }
+
+        [UIAction("clear-search")]
+        private async Task ClearSearch()
+        {
+            _filter = string.Empty;
+            await ShowSabers(true);
+            OnPropertyChanged(nameof(IsSearching));
         }
 
         [UIAction("clicked-reload")]

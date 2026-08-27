@@ -14,7 +14,7 @@ using Zenject;
 namespace SaberFactory.Game
 {
     internal class EventPlayer : IDisposable
-    { 
+    {
         [Inject] private readonly BeatmapObjectManager _beatmapObjectManager = null;
 
         [Inject] private readonly GameEnergyCounter _energyCounter = null;
@@ -26,7 +26,7 @@ namespace SaberFactory.Game
         [Inject] private readonly IScoreController _scoreController = null;
 
         [Inject] private readonly IComboController _comboController = null;
-        
+
         [Inject] private readonly RelativeScoreAndImmediateRankCounter _scoreCounter = null;
 
         [Inject] private readonly IReadonlyBeatmapData _beatmapData = null;
@@ -47,7 +47,7 @@ namespace SaberFactory.Game
         {
             _partEventsList = partEventsList;
             _saberType = saberType;
-            
+
             if (!_pluginConfig.EnableEvents)
             {
                 return;
@@ -86,13 +86,13 @@ namespace SaberFactory.Game
 
             // Accuracy changed
             _scoreCounter.relativeScoreOrImmediateRankDidChangeEvent += ScoreChanged;
-            
+
             // Combo changed
             _comboController.comboDidChangeEvent += OnComboDidChangeEvent;
 
             InvokeOnLevelStart();
         }
-        
+
         public void Dispose()
         {
             _beatmapObjectManager.noteWasCutEvent -= OnNoteCut;
@@ -204,19 +204,19 @@ namespace SaberFactory.Game
                 _prevScore = score;
             }
         }
-        
+
         private void OnComboDidChangeEvent(int combo)
         {
             InvokeComboChanged(combo);
         }
-        
+
         private void OnNoteCut(NoteController noteController, in NoteCutInfo noteCutInfo)
         {
             if (!_lastNoteTime.HasValue)
             {
                 return;
             }
-            
+
             if (!noteCutInfo.allIsOK)
             {
                 InvokeCombobreak();
@@ -242,7 +242,7 @@ namespace SaberFactory.Game
             {
                 return;
             }
-            
+
             if (noteController.noteData.colorType != ColorType.None)
             {
                 InvokeCombobreak();

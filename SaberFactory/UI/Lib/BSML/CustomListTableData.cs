@@ -181,6 +181,11 @@ namespace SaberFactory.UI.Lib.BSML
             return cellSize;
         }
 
+        public float CellSize()
+        {
+            return cellSize;
+        }
+
         public int NumberOfCells()
         {
             return Data.Count();

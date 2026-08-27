@@ -35,19 +35,31 @@ namespace SaberFactory.UI.Lib.BSML
 
         public static void SetGradient(Backgroundable background, string usingGradient)
         {
+            #if V_1_29_1
+            (background.background as ImageView).SetField("_gradient", bool.Parse(usingGradient));
+            #else
             (background.Background as ImageView).SetField("_gradient", bool.Parse(usingGradient));
+            #endif
         }
 
         public static void SetFill(Backgroundable background, string usingFill)
         {
+            #if V_1_29_1
+            background.background.fillCenter = bool.Parse(usingFill);
+            #else
             background.Background.fillCenter = bool.Parse(usingFill);
+  #endif
         }
 
         private void SetColor0(Backgroundable background, string colorStr)
         {
             ColorUtility.TryParseHtmlString(colorStr, out var color);
 
+            #if V_1_29_1
+            var iv = background.background as ImageView;
+            #else
             var iv = background.Background as ImageView;
+            #endif
             iv.SetField("_color0", color);
             iv.SetVerticesDirty();
         }
@@ -56,14 +68,22 @@ namespace SaberFactory.UI.Lib.BSML
         {
             ColorUtility.TryParseHtmlString(colorStr, out var color);
 
+            #if V_1_29_1
+            var iv = background.background as ImageView;
+            #else
             var iv = background.Background as ImageView;
+            #endif
             iv.SetField("_color1", color);
             iv.SetVerticesDirty();
         }
 
         private void SetSkew(Backgroundable background, string skew)
         {
+            #if V_1_29_1
+            var iv = background.background as ImageView;
+            #else
             var iv = background.Background as ImageView;
+            #endif
             iv.SetField("_skew", float.Parse(skew));
             iv.SetVerticesDirty();
         }

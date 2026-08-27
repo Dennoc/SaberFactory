@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+#if !V_1_29_1
 using AssetBundleLoadingTools.Utilities;
+#endif
 using CustomSaber;
 using HarmonyLib;
 using IPA.Utilities;
@@ -35,13 +37,19 @@ namespace SaberFactory.Loaders
                 return null;
             }
 
+            #if V_1_29_1
+            var result = await Readers.LoadAssetFromAssetBundleAsync<GameObject>(fullPath, "_CustomSaber");
+            #else
             var result = await Readers.LoadAssetFromAssetBundleSafeAsync<GameObject>(fullPath, "_CustomSaber");
+            #endif
+            
             if (result == null)
             {
                 return null;
             }
 
 
+            #if !V_1_29_1
             var info = await ShaderRepair.FixShadersOnGameObjectAsync(result.Item1);
             if (!info.AllShadersReplaced)
             {
@@ -51,6 +59,7 @@ namespace SaberFactory.Loaders
                     Debug.LogWarning($"\t- {shaderName}");
                 }
             }
+            #endif
 
 
             var trailsList = result.Item1.GetComponentsInChildren<CustomTrail>();
@@ -71,6 +80,7 @@ namespace SaberFactory.Loaders
                 matDict[trail.TrailMaterial].Add(trail);
             }
 
+            #if !V_1_29_1
             foreach (var (mat, trails) in matDict)
             {
                 var trailInfo = await ShaderRepair.FixShaderOnMaterialAsync(mat);
@@ -81,6 +91,7 @@ namespace SaberFactory.Loaders
                     trails.Do(x => x.TrailMaterial = null);
                 }
             }
+            #endif
 
             return new StoreAsset(relativePath, result.Item1, result.Item2);
         }

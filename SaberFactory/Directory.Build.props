@@ -15,8 +15,9 @@
 	<!-- Plugin Dependencies -->
 	<ItemGroup>
 		<DependsOn Include="BSIPA" Version="^4.3.6"/>
-		<DependsOn Include="BeatSaberMarkupLanguage" Version="^1.12.4"/>
-		<DependsOn Include="SiraUtil" Version="^3.1.14"/>
+		<DependsOn Condition="'$(BS_DEFINE)' == 'V_1_29_1'" Include="BeatSaberMarkupLanguage" Version="^1.6.10"/>
+		<DependsOn Condition="'$(BS_DEFINE)' != 'V_1_29_1'" Include="BeatSaberMarkupLanguage" Version="^1.12.4"/>
+		<DependsOn Include="SiraUtil" Version="^3.1.2"/>
 		<DependsOn Include="AssetBundleLoadingTools" Version="^1.1.10"/>
 	</ItemGroup>
 

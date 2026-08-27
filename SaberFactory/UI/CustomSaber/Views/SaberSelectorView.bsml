@@ -74,6 +74,15 @@
                         use-gradient='false'/>
                 <modal-keyboard id="search-keyboard"/>
             </horizontal>
+            <horizontal pref-height='16' pref-width='12' horizontal-fit='PreferredSize'>
+                <sui.button
+                        on-click='clear-search'
+                        show-line='false'
+                        text="Clear"
+                        hover-hint='Clear'
+                        hovered-color='#3486ebff'
+                        active="~should-show-clear"/>
+            </horizontal>
         </vertical>
     </horizontal>
 

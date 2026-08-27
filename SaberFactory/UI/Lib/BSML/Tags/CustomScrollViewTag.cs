@@ -91,7 +91,11 @@ namespace SaberFactory.UI.Lib.BSML.Tags
 
             parentObj.AddComponent<LayoutElement>();
             var scrollViewContent = parentObj.AddComponent<ScrollViewContent>();
+            #if V_1_29_1
+            scrollViewContent.scrollView = scrollView;
+            #else
             scrollViewContent.ScrollView = scrollView;
+            #endif
 
             var child = new GameObject();
             child.name = "BSMLScrollViewContentContainer";
@@ -109,9 +113,13 @@ namespace SaberFactory.UI.Lib.BSML.Tags
             child.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             child.AddComponent<LayoutElement>();
             var externalComponents = child.AddComponent<ExternalComponents>();
+            #if V_1_29_1
+            externalComponents.components.Add(scrollView);
+            externalComponents.components.Add(scrollView.transform);
+            #else
             externalComponents.Components.Add(scrollView);
             externalComponents.Components.Add(scrollView.transform);
-
+            #endif
             var childRect = child.transform.AsRectTransform();
             childRect.anchorMin = new Vector2(0, 1);
             childRect.anchorMax = new Vector2(1, 1);

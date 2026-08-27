@@ -14,6 +14,7 @@ using BeatSaberMarkupLanguage.Tags;
 using BeatSaberMarkupLanguage.TypeHandlers;
 using IPA.Utilities;
 using Newtonsoft.Json.Linq;
+using SaberFactory.Helpers;
 using SaberFactory.UI.Lib.BSML.Tags;
 using SiraUtil.Logging;
 using UnityEngine;
@@ -37,8 +38,8 @@ namespace SaberFactory.UI.Lib.BSML
             _logger = logger;
             _popupFactory = popupFactory;
             _customUiComponentFactory = customUiComponentFactory;
-            _bsmlParser = BSMLParser.Instance;
-            RegisterAll(BSMLParser.Instance);
+            _bsmlParser = BSMLParserWrapper.Instance;
+            RegisterAll(BSMLParserWrapper.Instance);
         }
 
         public void Initialize()
@@ -120,7 +121,11 @@ namespace SaberFactory.UI.Lib.BSML
                             var node = tag.CreateObject(parent);
                             foreach (var typeHandler in typeHandlers.Where(x => x.GetType().Assembly == thisAsm))
                             {
+                                #if V_1_29_1
+                                var type = typeHandler.GetType().GetCustomAttribute<ComponentHandler>().type;
+                                #else
                                 var type = typeHandler.GetType().GetCustomAttribute<ComponentHandler>().Type;
+                                #endif
                                 if (parser.InvokeMethod<Component, BSMLParser>("GetExternalComponent", node, type) != null)
                                 {
                                     foreach (var attrAliases in typeHandler.Props.Values)
@@ -167,7 +172,11 @@ namespace SaberFactory.UI.Lib.BSML
                     var currentNode = tag.CreateObject(parent);
                     foreach (var typeHandler in typeHandlers)
                     {
+                        #if V_1_29_1
+                        var type = typeHandler.GetType().GetCustomAttribute<ComponentHandler>().type;
+                        #else
                         var type = typeHandler.GetType().GetCustomAttribute<ComponentHandler>().Type;
+                        #endif
                         if (parser.InvokeMethod<Component, BSMLParser>("GetExternalComponent", currentNode, type) != null)
                         {
                             foreach (var attrAliases in typeHandler.Props.Values)
