@@ -3,6 +3,7 @@ using SaberFactory.Editor;
 using SaberFactory.Helpers;
 using SaberFactory.Instances.CustomSaber;
 using SaberFactory.Instances.Setters;
+using SaberFactory.Instances.Whacker;
 using SaberFactory.UI.Lib;
 using Zenject;
 
@@ -82,6 +83,12 @@ namespace SaberFactory.UI.CustomSaber.Views
             if (_editorInstanceManager.CurrentPiece is CustomSaberInstance cs)
             {
                 _transformDataSetter = cs.PropertyBlockSetterHandler.Cast<CustomSaberPropertyBlockSetterHandler>()
+                    .TransformDataSetter;
+            }
+            
+            if (_editorInstanceManager.CurrentPiece is WhackerInstance wi)
+            {
+                _transformDataSetter = wi.PropertyBlockSetterHandler.Cast<WhackerPropertyBlockSetterHandler>()  
                     .TransformDataSetter;
             }
 

@@ -8,6 +8,7 @@ using SaberFactory.Helpers;
 using SaberFactory.Instances;
 using SaberFactory.Instances.CustomSaber;
 using SaberFactory.Models.PropHandler;
+using SaberFactory.Models.Whacker;
 using SaberFactory.Serialization;
 using UnityEngine;
 using Zenject;
@@ -109,18 +110,24 @@ namespace SaberFactory.Models.CustomSaber
         public override void SyncFrom(BasePieceModel otherModel)
         {
             base.SyncFrom(otherModel);
-            var otherCs = (CustomSaberModel)otherModel;
 
-            if (otherCs.HasTrail || otherCs.TrailModel is { })
+            var otherTrailModel = otherModel switch
+            {
+                CustomSaberModel customSaber => customSaber.TrailModel,
+                WhackerModel whacker => whacker.TrailModel,
+                _ => null
+            };
+
+            if (otherTrailModel is { })
             {
                 TrailModel ??= new TrailModel();
 
-                TrailModel.TrailOriginTrails = otherCs.TrailModel.TrailOriginTrails;
+                TrailModel.TrailOriginTrails = otherTrailModel.TrailOriginTrails;
 
                 // backup current material
                 var originalMaterial = TrailModel.Material?.Material;
 
-                TrailModel.CopyFrom(otherCs.TrailModel);
+                TrailModel.CopyFrom(otherTrailModel);
 
                 var otherMat = TrailModel.Material.Material;
 
@@ -128,7 +135,7 @@ namespace SaberFactory.Models.CustomSaber
                 // if trail IS from different saber but shares the same shader just copy props
                 // otherwise (trail is from other saber and shaders are different) copy the whole material
                 if (originalMaterial != null && (string.IsNullOrWhiteSpace(TrailModel.TrailOrigin) ||
-                                    originalMaterial.shader.name == otherMat.shader.name))
+                                                 originalMaterial.shader.name == otherMat.shader.name))
                 {
                     foreach (var prop in otherMat.GetProperties(MaterialAttributes.HideInSf))
                     {

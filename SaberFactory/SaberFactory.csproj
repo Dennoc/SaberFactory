@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <BS_DEFINE Condition="'$(BS_DEFINE)' == ''">V_1_42_0</BS_DEFINE>
+    <BS_DEFINE Condition="'$(BS_DEFINE)' == ''">V_1_29_1</BS_DEFINE>
     <!--This defaults the beat saber definition version to 1_42_0-->
     <!--example SET <BS_DEFINE>V_1_40_8</BS_DEFINE> in your .csrpoj.user if using 1.40.8-->
   </PropertyGroup>

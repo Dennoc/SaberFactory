@@ -3,6 +3,7 @@ using CustomSaber;
 using HarmonyLib;
 using SaberFactory.Helpers;
 using SaberFactory.Instances.PostProcessors;
+using SaberFactory.Instances.Setters;
 using SaberFactory.Instances.Trail;
 using SaberFactory.Models;
 using SaberFactory.Models.Whacker;
@@ -19,7 +20,7 @@ namespace SaberFactory.Instances.Whacker
             List<IPartPostProcessor> postProcessors)
             : base(model, postProcessors)
         {
-            if (model.HasTrail)
+            if (model.TrailModel != null)
             {
                 InitializeTrailData(GameObject, model);
             }
@@ -42,6 +43,7 @@ namespace SaberFactory.Instances.Whacker
 
             instance.SetActive(true);
 
+            PropertyBlockSetterHandler = new WhackerPropertyBlockSetterHandler(instance, Model as WhackerModel);
             _postProcessors.Do(x => x.ProcessPart(instance));
 
             return instance;
@@ -56,7 +58,10 @@ namespace SaberFactory.Instances.Whacker
             if (whackerObject == null || trailModel == null)
                 return;
 
-            var trail = whackerObject.AddComponent<CustomTrail>();
+            var trail = whackerObject.GetComponent<CustomTrail>();
+
+            if (trail == null)
+                return;
 
             trail.Length = trailModel.Length;
             trail.TrailMaterial = trailModel.Material?.Material;

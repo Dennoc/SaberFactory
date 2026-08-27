@@ -110,31 +110,30 @@ namespace SaberFactory.Models
         private async Task LoadFromTrailOrigin(Serializer serializer, JToken trailOrigin)
         {
             var comp = await serializer.LoadPiece(trailOrigin);
+
+            TrailModel originTrailModel = null;
+            List<CustomTrail> originTrails = null;
+
             if (comp?.GetLeft() is CustomSaberModel cs)
             {
-                var originTrailModel = cs.GrabTrail(true);
-                if (originTrailModel == null)
-                {
-                    return;
-                }
-
-                Material ??= new MaterialDescriptor(null);
-                Material.Material = originTrailModel.Material.Material;
-                TrailOriginTrails = SaberHelpers.GetTrails(cs.Prefab);
+                originTrailModel = cs.GrabTrail(false);
+                originTrails = SaberHelpers.GetTrails(cs.Prefab);
             }
             else if (comp?.GetLeft() is WhackerModel wm)
             {
-                var originTrailModel = wm.GrabTrail(true);
-                if (originTrailModel == null)
-                {
-                    return;
-                }
-
-                Material ??= new MaterialDescriptor(null);
-                Material.Material = originTrailModel.Material.Material;
-                TrailOriginTrails = SaberHelpers.GetTrails(wm.Prefab);
+                originTrailModel = wm.GrabTrail(false);
+                originTrails = SaberHelpers.GetTrails(wm.Prefab);
             }
-            
+
+            if (originTrailModel == null)
+            {
+                return;
+            }
+
+            Material ??= new MaterialDescriptor(null);
+            Material.Material = new Material(originTrailModel.Material.Material);
+
+            TrailOriginTrails = originTrails;
         }
     }
 }

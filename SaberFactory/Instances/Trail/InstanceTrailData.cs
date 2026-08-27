@@ -141,7 +141,13 @@ namespace SaberFactory.Instances.Trail
         
         public void RevertMaterialForWhacker(WhackerModel saber)
         {
+            if (!(TrailModel?.Material is { IsValid: true }))
+                return;
+
             TrailModel.Material.Revert();
+
+            if (!TrailModel.Material.IsValid)
+                return;
 
             var saberTrail = saber.StoreAsset.Prefab.GetComponent<CustomTrail>();
             if (saberTrail == null)

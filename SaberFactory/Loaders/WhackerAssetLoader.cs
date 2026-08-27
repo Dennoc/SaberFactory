@@ -2,7 +2,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
+
+#if !V_1_29_1
 using AssetBundleLoadingTools.Utilities;
+#endif
 using Newtonsoft.Json;
 using SaberFactory.DataStore;
 using SaberFactory.Helpers;
@@ -74,12 +77,19 @@ namespace SaberFactory.Loaders
             }
 
             // First load the bundle and asset.
+            #if !V_1_29_1
             var result = await Readers.LoadAssetFromAssetBundleSafeAsync<GameObject>(
                 bundleBytes,
                 "_Whacker"
             );
+            #else
+            var result = await Readers.LoadAssetFromAssetBundleAsync<GameObject>(
+                bundleBytes,
+                "_Whacker"
+            );
+            #endif
 
-            // If the bundle itself failed, don't retry with another asset name.
+            
             if (result == null)
             {
                 Debug.LogError(
@@ -95,10 +105,17 @@ namespace SaberFactory.Loaders
                     $"{relativePath}: '_Whacker' not found, retrying legacy '_CustomSaber'"
                 );
 
+                #if !V_1_29_1
                 result = await Readers.LoadAssetFromAssetBundleSafeAsync<GameObject>(
                     bundleBytes,
                     "_CustomSaber"
                 );
+                #else
+                result = await Readers.LoadAssetFromAssetBundleAsync<GameObject>(
+                    bundleBytes,
+                    "_CustomSaber"
+                );
+                #endif
 
                 if (result == null || result.Item1 == null)
                 {
@@ -113,6 +130,7 @@ namespace SaberFactory.Loaders
 
             try
             {
+                #if !V_1_29_1
                 var info = await ShaderRepair.FixShadersOnGameObjectAsync(result.Item1);
 
                 if (!info.AllShadersReplaced)
@@ -120,8 +138,12 @@ namespace SaberFactory.Loaders
                     Debug.LogWarning($"Missing shader replacement data for {relativePath}:");
 
                     foreach (var shaderName in info.MissingShaderNames)
+                    {
                         Debug.LogWarning($"\t- {shaderName}");
+                    }
                 }
+                
+                #endif
             }
             finally
             {

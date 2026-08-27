@@ -7,7 +7,6 @@ using Newtonsoft.Json.Linq;
 using SaberFactory.DataStore;
 using SaberFactory.Helpers;
 using SaberFactory.Instances;
-using SaberFactory.Instances.CustomSaber;
 using SaberFactory.Instances.Whacker;
 using SaberFactory.Models.CustomSaber;
 using SaberFactory.Serialization;
@@ -27,7 +26,9 @@ namespace SaberFactory.Models.Whacker
         private TrailModel _trailModel;
         private bool? _hasTrail;
 
-        public bool HasTrail => _hasTrail ??= CheckTrail();
+        public bool HasTrail =>
+            _trailModel != null ||
+            (_hasTrail ??= CheckTrail());
 
         public TrailModel TrailModel
         {
@@ -58,20 +59,24 @@ namespace SaberFactory.Models.Whacker
 
         public WhackerModel(StoreAsset storeAsset) : base(storeAsset)
         {
-            PropertyBlock = new PropHandler.CustomSaberPropertyBlock();
+            PropertyBlock = new PropHandler.WhackerPropertyBlock();
         }
         
         public override void OnLazyInit()
         {
-            if (!HasTrail)
+            var trailModel = TrailModel;
+
+            if (trailModel == null)
             {
                 return;
             }
 
-            var trailModel = TrailModel;
+            var path = _pluginDirectories.Cache
+                .GetFile(StoreAsset.NameWithoutExtension + ".trail")
+                .FullName;
 
-            var path = _pluginDirectories.Cache.GetFile(StoreAsset.NameWithoutExtension+".trail").FullName;
             var trail = QuickSave.LoadObject<CustomSaberModel.TrailProportions>(path);
+
             if (trail == null)
             {
                 return;
@@ -83,19 +88,23 @@ namespace SaberFactory.Models.Whacker
 
         public override void SaveAdditionalData()
         {
-            if (!HasTrail)
+            var trailModel = TrailModel;
+
+            if (trailModel == null)
             {
                 return;
             }
 
-            var trailModel = TrailModel;
+            var path = _pluginDirectories.Cache
+                .GetFile(StoreAsset.NameWithoutExtension + ".trail")
+                .FullName;
 
-            var path = _pluginDirectories.Cache.GetFile(StoreAsset.NameWithoutExtension+".trail").FullName;
             var trail = new CustomSaberModel.TrailProportions
             {
                 Length = trailModel.Length,
                 Width = trailModel.Width
             };
+
             QuickSave.SaveObject(trail, path);
         }
         
@@ -112,34 +121,28 @@ namespace SaberFactory.Models.Whacker
         {
             base.SyncFrom(otherModel);
 
-            var otherWhacker = (WhackerModel)otherModel;
-
-            if (otherWhacker.HasTrail || otherWhacker.TrailModel is { })
+            var otherTrailModel = otherModel switch
             {
-                _trailModel ??= new TrailModel();
+                WhackerModel whacker => whacker.TrailModel,
+                CustomSaberModel customSaber => customSaber.TrailModel,
+                _ => null
+            };
 
-                TrailModel.TrailOriginTrails = otherWhacker.TrailModel.TrailOriginTrails;
+            if (otherTrailModel == null)
+            {
+                return;
+            }
 
-                var originalMaterial = TrailModel.Material?.Material;
+            _trailModel ??= new TrailModel();
 
-                TrailModel.CopyFrom(otherWhacker.TrailModel);
+            TrailModel.TrailOriginTrails = otherTrailModel.TrailOriginTrails;
 
-                var otherMat = TrailModel.Material.Material;
+            TrailModel.CopyFrom(otherTrailModel);
 
-                if (originalMaterial != null && (string.IsNullOrWhiteSpace(TrailModel.TrailOrigin) ||
-                                                 originalMaterial.shader.name == otherMat.shader.name))
-                {
-                    foreach (var prop in otherMat.GetProperties(MaterialAttributes.HideInSf))
-                    {
-                        originalMaterial.SetProperty(prop.Item2, prop.Item1, prop.Item3);
-                    }
-
-                    TrailModel.Material.Material = originalMaterial;
-                }
-                else
-                {
-                    originalMaterial.TryDestoryImmediate();
-                }
+            var trail = Prefab.GetComponent<CustomTrail>();
+            if (trail != null && TrailModel.Material?.Material != null)
+            {
+                trail.TrailMaterial = TrailModel.Material.Material;
             }
         }
 
@@ -174,12 +177,44 @@ namespace SaberFactory.Models.Whacker
         
         public TrailModel GrabTrail(bool addTrailOrigin)
         {
-            if (!HasTrail)
+            if (!(_hasTrail ??= CheckTrail()))
+            {
                 return null;
-
+            }
+            
             var saberRoot = SaberSlot == ESaberSlot.Left
                 ? Prefab.transform.Find("LeftSaber")
                 : Prefab.transform.Find("RightSaber");
+            
+            CustomTrail SetupTrail(
+                Vector3 startPosition,
+                Vector3 endPosition,
+                int length,
+                Material material)
+            {
+                var existingTrail = Prefab.GetComponent<CustomTrail>();
+
+                if (existingTrail != null)
+                {
+                    return existingTrail;
+                }
+
+                var trail = Prefab.AddComponent<CustomTrail>();
+
+                trail.Length = length;
+                trail.TrailMaterial = material;
+
+                trail.PointStart =
+                    Prefab.CreateGameObject("PointStart").transform;
+
+                trail.PointEnd =
+                    Prefab.CreateGameObject("PointEnd").transform;
+
+                trail.PointStart.localPosition = startPosition;
+                trail.PointEnd.localPosition = endPosition;
+
+                return trail;
+            }
 
             if (saberRoot == null)
                 saberRoot = Prefab.transform;
@@ -255,13 +290,22 @@ namespace SaberFactory.Models.Whacker
             TrailPointStartPosition = bottomPos;
             TrailPointEndPosition = topPos;
             
+            
+            SetupTrail(
+                bottomPos,
+                topPos,
+                trailInfo.Length,
+                material);
+            
             FixTrailParents();
 
+            var trailComp = Prefab.GetComponent<CustomTrail>();
+            
             return new TrailModel(
                 Vector3.zero,
                 Mathf.Abs(topPos.z - bottomPos.z),
                 trailInfo.Length,
-                new MaterialDescriptor(material),
+                new MaterialDescriptor(trailComp.TrailMaterial),
                 trailInfo.WhiteStep,
                 null,
                 addTrailOrigin ? StoreAsset.RelativePath : null);

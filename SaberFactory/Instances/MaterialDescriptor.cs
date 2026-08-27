@@ -26,7 +26,12 @@ namespace SaberFactory.Instances
 
         public virtual void Revert()
         {
-            if (_originalMaterial is null)
+            if (_originalMaterial is null || Material is null)
+            {
+                return;
+            }
+
+            if (Material == _originalMaterial)
             {
                 return;
             }
