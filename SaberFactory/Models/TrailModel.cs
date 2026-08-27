@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using SaberFactory.Helpers;
 using SaberFactory.Instances;
 using SaberFactory.Models.CustomSaber;
+using SaberFactory.Models.Whacker;
 using SaberFactory.Serialization;
 using UnityEngine;
 
@@ -109,20 +110,31 @@ namespace SaberFactory.Models
         private async Task LoadFromTrailOrigin(Serializer serializer, JToken trailOrigin)
         {
             var comp = await serializer.LoadPiece(trailOrigin);
-            if (!(comp?.GetLeft() is CustomSaberModel cs))
+            if (comp?.GetLeft() is CustomSaberModel cs)
             {
-                return;
-            }
+                var originTrailModel = cs.GrabTrail(true);
+                if (originTrailModel == null)
+                {
+                    return;
+                }
 
-            var originTrailModel = cs.GrabTrail(true);
-            if (originTrailModel == null)
+                Material ??= new MaterialDescriptor(null);
+                Material.Material = originTrailModel.Material.Material;
+                TrailOriginTrails = SaberHelpers.GetTrails(cs.Prefab);
+            }
+            else if (comp?.GetLeft() is WhackerModel wm)
             {
-                return;
-            }
+                var originTrailModel = wm.GrabTrail(true);
+                if (originTrailModel == null)
+                {
+                    return;
+                }
 
-            Material ??= new MaterialDescriptor(null);
-            Material.Material = originTrailModel.Material.Material;
-            TrailOriginTrails = SaberHelpers.GetTrails(cs.Prefab);
+                Material ??= new MaterialDescriptor(null);
+                Material.Material = originTrailModel.Material.Material;
+                TrailOriginTrails = SaberHelpers.GetTrails(wm.Prefab);
+            }
+            
         }
     }
 }

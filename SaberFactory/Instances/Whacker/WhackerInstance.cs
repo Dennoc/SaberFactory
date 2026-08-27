@@ -21,7 +21,7 @@ namespace SaberFactory.Instances.Whacker
         {
             if (model.HasTrail)
             {
-                InitializeTrailData(GameObject, model.TrailModel);
+                InitializeTrailData(GameObject, model);
             }
         }
 
@@ -32,8 +32,9 @@ namespace SaberFactory.Instances.Whacker
 
         protected override GameObject Instantiate()
         {
+            
             var model = Model.Cast<WhackerModel>();
-
+            model.FixTrailParents();
             var instance = Object.Instantiate(
                 model.Prefab,
                 Vector3.zero,
@@ -48,12 +49,12 @@ namespace SaberFactory.Instances.Whacker
 
         private void InitializeTrailData(
             GameObject whackerObject,
-            TrailModel trailModel)
+            WhackerModel model)
         {
+            var trailModel = model.TrailModel;
+
             if (whackerObject == null || trailModel == null)
-            {
                 return;
-            }
 
             var trail = whackerObject.AddComponent<CustomTrail>();
 
@@ -66,8 +67,12 @@ namespace SaberFactory.Instances.Whacker
             trail.PointEnd =
                 whackerObject.CreateGameObject("PointEnd").transform;
 
-            trail.PointStart.localPosition = Vector3.zero;
-            trail.PointEnd.localPosition = trailModel.TrailPosOffset;
+            trail.PointStart.position = model.TrailPointStartPosition;
+            trail.PointEnd.position = model.TrailPointEndPosition;
+
+            // trail.colorType = trailModel.ColorType;
+            // trail.TrailColor = trailModel.TrailColor;
+            // trail.MultiplierColor = trailModel.MultiplierColor;
 
             var pointStart = trail.PointStart;
             var pointEnd = trail.PointEnd;

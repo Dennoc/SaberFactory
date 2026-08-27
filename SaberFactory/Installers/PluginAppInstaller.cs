@@ -108,9 +108,11 @@ namespace SaberFactory.Installers
         private void InstallFactories()
         {
             Container.BindFactory<StoreAsset, CustomSaberModel, CustomSaberModel.Factory>();
+            Container.BindFactory<StoreAsset, WhackerModel, WhackerModel.Factory>();
 
             Container.BindFactory<BasePieceModel, BasePieceInstance, BasePieceInstance.Factory>()
                 .FromFactory<InstanceFactory>();
+            
             Container.BindFactory<SaberModel, SaberInstance, SaberInstance.Factory>();
         }
     }

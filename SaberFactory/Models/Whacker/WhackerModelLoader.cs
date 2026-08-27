@@ -8,9 +8,11 @@ namespace SaberFactory.Models.Whacker
     internal class WhackerModelLoader : IStoreAssetParser
     {
         private readonly PluginConfig _config;
+        private readonly WhackerModel.Factory _factory;
 
-        public WhackerModelLoader(PluginConfig config)
+        public WhackerModelLoader(WhackerModel.Factory factory,PluginConfig config)
         {
+            _factory = factory;
             _config = config;
         }
 
@@ -21,7 +23,7 @@ namespace SaberFactory.Models.Whacker
             if (rightSaber == null)
             {
                 var newParent = new GameObject("RightSaber").transform;
-                newParent.parent = storeAsset.Prefab.transform;
+                newParent.SetParent(storeAsset.Prefab.transform, false);
 
                 rightSaber = Object.Instantiate(leftSaber, newParent, false);
                 rightSaber.transform.localScale = new Vector3(-1, 1, 1);
@@ -35,8 +37,11 @@ namespace SaberFactory.Models.Whacker
             var storeAssetLeft = new WhackerStoreAsset(storeAsset.RelativePath, leftSaber, storeAsset.AssetBundle, manifest);
             var storeAssetRight = new WhackerStoreAsset(storeAsset.RelativePath, rightSaber, storeAsset.AssetBundle, manifest);
 
-            var modelLeft = new WhackerModel(storeAssetLeft) { SaberSlot = ESaberSlot.Left };
-            var modelRight = new WhackerModel(storeAssetRight) { SaberSlot = ESaberSlot.Right };
+            var modelLeft = _factory.Create(storeAssetLeft);
+            var modelRight = _factory.Create(storeAssetRight);
+
+            modelRight.SaberSlot = ESaberSlot.Right;
+            modelLeft.SaberSlot = ESaberSlot.Left;
 
             var composition = new ModelComposition(AssetTypeDefinition.CustomSaber, modelLeft, modelRight, storeAsset.Prefab);
             composition.SetFavorite(_config.IsFavorite(storeAsset.RelativePath));

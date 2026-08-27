@@ -5,6 +5,7 @@ using HarmonyLib;
 using SaberFactory.Helpers;
 using SaberFactory.Models;
 using SaberFactory.Models.CustomSaber;
+using SaberFactory.Models.Whacker;
 using UnityEngine;
 
 namespace SaberFactory.Instances.Trail
@@ -126,6 +127,19 @@ namespace SaberFactory.Instances.Trail
         }
 
         public void RevertMaterialForCustomSaber(CustomSaberModel saber)
+        {
+            TrailModel.Material.Revert();
+
+            var saberTrail = saber.StoreAsset.Prefab.GetComponent<CustomTrail>();
+            if (saberTrail == null)
+            {
+                return;
+            }
+
+            saberTrail.TrailMaterial = TrailModel.Material.Material;
+        }
+        
+        public void RevertMaterialForWhacker(WhackerModel saber)
         {
             TrailModel.Material.Revert();
 

@@ -175,6 +175,7 @@ namespace SaberFactory.DataStore
         {
             UnloadAll();
             await LoadAllCustomSaberMetaDataAsync();
+            await LoadAllWhackerMetaDataAsync();
         }
 
         public void Delete(string path)

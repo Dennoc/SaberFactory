@@ -225,32 +225,39 @@ namespace SaberFactory.Instances
                 piece.Dispose();
             }
         }
-
-        private bool GetCustomSaber(out CustomSaberInstance customSaberInstance)
-        {
-            if (PieceCollection.TryGetPiece(
-                AssetTypeDefinition.CustomSaber,
-                out var instance))
-            {
-                customSaberInstance = instance as CustomSaberInstance;
-                return customSaberInstance != null;
-            }
-
-            customSaberInstance = null;
-            return false;
-        }
-
-        internal InstanceTrailData GetTrailData(out List<CustomTrail> secondaryTrails)
+        
+        internal InstanceTrailData GetTrailData(
+            out List<CustomTrail> secondaryTrails)
         {
             secondaryTrails = null;
 
-            if (GetCustomSaber(out var customsaber))
+            if (!PieceCollection.TryGetPiece(
+                AssetTypeDefinition.CustomSaber,
+                out var instance))
             {
-                secondaryTrails = customsaber.InstanceTrailData?.SecondaryTrails.Select(x => x.Trail).ToList();
-                return customsaber.InstanceTrailData;
+                return _instanceTrailData;
             }
 
-            return _instanceTrailData;
+            switch (instance)
+            {
+                case CustomSaberInstance customSaber:
+                    secondaryTrails = customSaber.InstanceTrailData?
+                        .SecondaryTrails?
+                        .Select(x => x.Trail)
+                        .ToList();
+
+                    return customSaber.InstanceTrailData;
+                case WhackerInstance whacker:
+                    secondaryTrails = whacker.InstanceTrailData?
+                        .SecondaryTrails?
+                        .Select(x => x.Trail)
+                        .ToList();
+
+                    return whacker.InstanceTrailData;
+                default:
+                    return _instanceTrailData;
+            }
+
         }
 
         public void SetSaberWidth(float width)

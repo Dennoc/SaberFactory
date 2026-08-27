@@ -38,7 +38,7 @@ namespace SaberFactory.Editor
 
             presetSaveManager.OnSaberLoaded += delegate
             {
-                if (saberSet.LeftSaber.GetCustomSaber(out var customsaber))
+                if (saberSet.LeftSaber.GetCustomSaberOrWhacker(out var customsaber))
                 {
                     SetModelComposition(customsaber.ModelComposition, false);
                 }
