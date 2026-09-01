@@ -173,6 +173,16 @@ namespace SaberFactory.DataStore
 
         public async Task ReloadAll()
         {
+            AdditionalCustomSaberFolders.Clear();
+            
+            foreach (var directory in _pluginDirs.CustomSaberDir.GetDirectories("*", SearchOption.AllDirectories))
+            {
+                var relPath = PathTools.ToRelativePath(directory.FullName);
+                relPath = PathTools.CorrectRelativePath(relPath);
+                relPath = relPath.Substring(relPath.IndexOf('\\') + 1);
+                AdditionalCustomSaberFolders.Add(relPath);
+            }
+            
             UnloadAll();
             await LoadAllCustomSaberMetaDataAsync();
             await LoadAllWhackerMetaDataAsync();

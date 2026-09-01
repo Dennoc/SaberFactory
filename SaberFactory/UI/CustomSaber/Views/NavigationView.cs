@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Threading;
 using BeatSaberMarkupLanguage.Attributes;
+using SaberFactory.Configuration;
 using SaberFactory.UI.CustomSaber.CustomComponents;
 using SaberFactory.UI.Lib;
 using TMPro;
+using UnityEngine;
 using Zenject;
 
 namespace SaberFactory.UI.CustomSaber.Views
@@ -17,18 +19,22 @@ namespace SaberFactory.UI.CustomSaber.Views
         public override IAnimatableUi.EAnimationType AnimationType => IAnimatableUi.EAnimationType.Vertical;
 
         [Inject] private readonly PluginManager _pluginManager = null;
+        [Inject] private readonly PluginConfig _config = null;
 
         private NavButton _currentSelectedNavButton;
 
         private void Awake()
         {
             _navButtons = new List<object>();
-
+            
             var saberButton = new NavButtonWrapper(
                 ENavigationCategory.Saber,
                 "SaberFactory.Resources.Icons.customsaber-icon.png",
-                ClickedCategory,
-                "Select a saber");
+                (button, category) =>
+                {
+                    _config.FavoriteOnlyFilterMode = false;
+                    ClickedCategory(button, category);
+                },"Select a saber");
 
             var trailButton = new NavButtonWrapper(
                 ENavigationCategory.Trail,
@@ -94,6 +100,13 @@ namespace SaberFactory.UI.CustomSaber.Views
         private void ClickSettings(NavButton button, string _)
         {
             ClickedCategory(button, ENavigationCategory.Settings);
+        }
+        
+        [UIAction("clicked-favorites")]
+        private void ClickFavorites(NavButton button, string _)
+        {
+            _config.FavoriteOnlyFilterMode = true;
+            ClickedCategory(button, ENavigationCategory.Saber);
         }
 
         [UIAction("clicked-exit")]

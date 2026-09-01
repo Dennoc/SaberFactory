@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using IPA.Config.Stores;
 using IPA.Config.Stores.Attributes;
@@ -63,7 +64,7 @@ namespace SaberFactory.Configuration
 
         // Automatically reload the saber when the file changes (saber needs to be selected)
         public bool ReloadOnSaberUpdate { get; set; } = false;
-
+        
         // How many threads to spawn when loading all sabers
         // ! Not used as of right now !
         [Ignore] public int LoadingThreads { get; set; } = 2;
@@ -78,6 +79,23 @@ namespace SaberFactory.Configuration
         public List<string> Favorites { get; set; } = new List<string>();
 
         [Ignore] public bool RuntimeFirstLaunch;
+
+        [Ignore] private bool _favoriteOnlyFilterMode;
+
+        public event Action<bool> OnFilterModeChanged; 
+
+        [Ignore] public bool FavoriteOnlyFilterMode
+        {
+            get
+            {
+                return _favoriteOnlyFilterMode;
+            }
+            set
+            {
+                _favoriteOnlyFilterMode = value;
+                OnFilterModeChanged?.Invoke(value);
+            }
+        }
 
         /// <summary>
         ///     Add an asset to the favorites list

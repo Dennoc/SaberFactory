@@ -86,7 +86,7 @@ namespace SaberFactory.UI.CustomSaber.Views
         public override void DidOpen()
         {
             _editorInstanceManager.OnModelCompositionSet += CompositionDidChange;
-
+            
             if (_pluginConfig.ReloadOnSaberUpdate)
             {
                 _saberFileWatcher.OnSaberUpdate += OnSaberFileUpdate;
@@ -105,6 +105,8 @@ namespace SaberFactory.UI.CustomSaber.Views
 
             _saberFileWatcher.StopWatching();
         }
+
+        private bool _favoriteOnlyMode = false;
 
         [UIAction("#post-parse")]
         private async void Setup()
@@ -130,6 +132,12 @@ namespace SaberFactory.UI.CustomSaber.Views
             
             _listTitle = "<color=#2f6594>Saber Factory " + _metadata.HVersion + "</color>";
             _saberList.SetText(_listTitle);
+
+            _pluginConfig.OnFilterModeChanged += async b =>
+            {
+                _favoriteOnlyMode = b;
+                await ShowSabers(true);
+            };
             await LoadSabers();
         }
 
@@ -186,8 +194,7 @@ namespace SaberFactory.UI.CustomSaber.Views
             var items = new List<ICustomListItem>(metaEnumerable);
             var loadedNames = items.Select(x => x.ListName).ToList();
 
-            // Fill the saber list with the currently selected directory
-            _saberList.SetItems(_dirManager.Process(items, IsSearching));
+            _saberList.SetItems(_dirManager.Process(items, IsSearching, _favoriteOnlyMode));
 
             _currentComposition = _editorInstanceManager.CurrentModelComposition;
 
