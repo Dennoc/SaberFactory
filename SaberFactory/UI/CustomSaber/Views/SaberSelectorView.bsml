@@ -14,7 +14,7 @@
             <sui.custom-list id='saber-list' title='' height='79' width='80' bg-color='$saber-selector'/>
             <vertical pref-width='80' bg="round-rect-panel" custom-color='$saber-selector-sec' pad-left='2' pad-right='2' pad-top='1'
                       pad-bottom='1'>
-                <slider-setting text='Global Saber Width' value='saber-width' get-event='update-width' apply-on-change='true'
+                <slider-setting text='Saber Width' value='saber-width' get-event='update-width' apply-on-change='true'
                                 max='~global-saber-width-max' increment='0.05'/>
             </vertical>
         </vertical>
