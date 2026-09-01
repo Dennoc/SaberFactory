@@ -56,13 +56,7 @@ namespace SaberFactory.DataStore
             _modelCompositions = new Dictionary<string, ModelComposition>();
             _metaData = new Dictionary<string, PreloadMetaData>();
 
-            foreach (var directory in pluginDirs.CustomSaberDir.GetDirectories("*", SearchOption.AllDirectories))
-            {
-                var relPath = PathTools.ToRelativePath(directory.FullName);
-                relPath = PathTools.CorrectRelativePath(relPath);
-                relPath = relPath.Substring(relPath.IndexOf('\\') + 1);
-                AdditionalCustomSaberFolders.Add(relPath);
-            }
+            CollectDirectories();
         }
 
         public void Dispose()
@@ -174,7 +168,16 @@ namespace SaberFactory.DataStore
         public async Task ReloadAll()
         {
             AdditionalCustomSaberFolders.Clear();
+
+            CollectDirectories();
             
+            UnloadAll();
+            await LoadAllCustomSaberMetaDataAsync();
+            await LoadAllWhackerMetaDataAsync();
+        }
+
+        private void CollectDirectories()
+        {
             foreach (var directory in _pluginDirs.CustomSaberDir.GetDirectories("*", SearchOption.AllDirectories))
             {
                 var relPath = PathTools.ToRelativePath(directory.FullName);
@@ -182,10 +185,6 @@ namespace SaberFactory.DataStore
                 relPath = relPath.Substring(relPath.IndexOf('\\') + 1);
                 AdditionalCustomSaberFolders.Add(relPath);
             }
-            
-            UnloadAll();
-            await LoadAllCustomSaberMetaDataAsync();
-            await LoadAllWhackerMetaDataAsync();
         }
 
         public void Delete(string path)
