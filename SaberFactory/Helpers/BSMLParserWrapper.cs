@@ -2,12 +2,12 @@ using BeatSaberMarkupLanguage;
 
 namespace SaberFactory.Helpers
 {
-    public class BSMLParserWrapper
+    public static class BSMLParserWrapper
     {
         #if V_1_29_1
-        public static BSMLParser Instance  { get; } = BSMLParser.instance;
+        public static BSMLParser Instance => BSMLParser.instance;
         #else
-        public static BSMLParser Instance { get; } = BSMLParser.Instance;
+        public static BSMLParser Instance => BSMLParser.Instance;
         #endif
     }
 }
