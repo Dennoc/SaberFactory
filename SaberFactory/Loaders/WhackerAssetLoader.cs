@@ -25,10 +25,17 @@ namespace SaberFactory.Loaders
         public override ISet<AssetMetaPath> CollectFiles(PluginDirectories dirs)
         {
             var paths = new HashSet<AssetMetaPath>();
-            foreach (var path in dirs.CustomSaberDir.EnumerateFiles($"*{HandledExtension}", SearchOption.AllDirectories))
+
+            foreach (var path in dirs.CustomSaberDir.EnumerateFiles(
+                $"*{HandledExtension}",
+                SearchOption.AllDirectories))
             {
-                paths.Add(new AssetMetaPath(path, dirs.Cache.GetFile(path.Name + ".meta").FullName));
+                paths.Add(new AssetMetaPath(
+                    path,
+                    dirs.Cache.GetFile(path.Name + ".meta").FullName
+                ));
             }
+
             return paths;
         }
 
@@ -36,7 +43,9 @@ namespace SaberFactory.Loaders
         {
             var fullPath = PathTools.ToFullPath(relativePath);
             if (!File.Exists(fullPath))
+            {
                 return null;
+            }
 
             using var zip = ZipFile.OpenRead(fullPath);
 
@@ -48,9 +57,12 @@ namespace SaberFactory.Loaders
             }
 
             WhackerManifest manifest;
+
             using (var sr = new StreamReader(manifestEntry.Open()))
             {
-                manifest = JsonConvert.DeserializeObject<WhackerManifest>(sr.ReadToEnd());
+                manifest = JsonConvert.DeserializeObject<WhackerManifest>(
+                    sr.ReadToEnd()
+                );
             }
 
             if (manifest == null)
@@ -63,12 +75,13 @@ namespace SaberFactory.Loaders
             if (bundleEntry == null)
             {
                 Debug.LogWarning(
-                    $"{relativePath}: Android bundle entry '{manifest.AndroidFileName}' not found"
+                    $"{relativePath}: AssetBundle entry '{manifest.PcFileName}' not found"
                 );
                 return null;
             }
 
             byte[] bundleBytes;
+
             using (var bundleStream = bundleEntry.Open())
             using (var ms = new MemoryStream())
             {
@@ -76,42 +89,37 @@ namespace SaberFactory.Loaders
                 bundleBytes = ms.ToArray();
             }
 
-            // First load the bundle and asset.
-            #if !V_1_29_1
-            var result = await Readers.LoadAssetFromAssetBundleSafeAsync<GameObject>(
+            #if V_1_29_1
+            var result = await Readers.LoadAssetFromAssetBundleAsync<GameObject>(
                 bundleBytes,
                 "_Whacker"
             );
             #else
-            var result = await Readers.LoadAssetFromAssetBundleAsync<GameObject>(
+            var result = await Readers.LoadAssetFromAssetBundleSafeAsync<GameObject>(
                 bundleBytes,
                 "_Whacker"
             );
             #endif
 
-            
             if (result == null)
             {
-                Debug.LogError(
-                    $"{relativePath}: failed to load Android AssetBundle '{manifest.AndroidFileName}'"
-                );
                 return null;
             }
 
-            // Bundle loaded successfully, but the modern prefab name wasn't found.
+            // Fall back to the legacy CustomSaber prefab name.
             if (result.Item1 == null)
             {
                 Debug.LogWarning(
                     $"{relativePath}: '_Whacker' not found, retrying legacy '_CustomSaber'"
                 );
 
-                #if !V_1_29_1
-                result = await Readers.LoadAssetFromAssetBundleSafeAsync<GameObject>(
+                #if V_1_29_1
+                result = await Readers.LoadAssetFromAssetBundleAsync<GameObject>(
                     bundleBytes,
                     "_CustomSaber"
                 );
                 #else
-                result = await Readers.LoadAssetFromAssetBundleAsync<GameObject>(
+                result = await Readers.LoadAssetFromAssetBundleSafeAsync<GameObject>(
                     bundleBytes,
                     "_CustomSaber"
                 );
@@ -126,29 +134,19 @@ namespace SaberFactory.Loaders
                 }
             }
 
-            result.Item1.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+            #if !V_1_29_1
+            var info = await ShaderRepair.FixShadersOnGameObjectAsync(result.Item1);
 
-            try
+            if (!info.AllShadersReplaced)
             {
-                #if !V_1_29_1
-                var info = await ShaderRepair.FixShadersOnGameObjectAsync(result.Item1);
+                Debug.LogWarning($"Missing shader replacement data for {relativePath}:");
 
-                if (!info.AllShadersReplaced)
+                foreach (var shaderName in info.MissingShaderNames)
                 {
-                    Debug.LogWarning($"Missing shader replacement data for {relativePath}:");
-
-                    foreach (var shaderName in info.MissingShaderNames)
-                    {
-                        Debug.LogWarning($"\t- {shaderName}");
-                    }
+                    Debug.LogWarning($"\t- {shaderName}");
                 }
-                
-                #endif
             }
-            finally
-            {
-                result.Item1.hideFlags &= ~HideFlags.DontUnloadUnusedAsset;
-            }
+            #endif
 
             return new WhackerStoreAsset(
                 relativePath,
@@ -158,7 +156,25 @@ namespace SaberFactory.Loaders
             );
         }
 
-        public override Task<StoreAsset> LoadStoreAssetFromBundleAsync(AssetBundle bundle, string saberName)
-            => Task.FromResult<StoreAsset>(null); // not applicable for whackers
+        public override async Task<StoreAsset> LoadStoreAssetFromBundleAsync(
+            AssetBundle bundle,
+            string saberName)
+        {
+            var result = await bundle.LoadAssetFromAssetBundleAsync<GameObject>(
+                "_Whacker"
+            );
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            return new WhackerStoreAsset(
+                "External\\" + saberName,
+                result,
+                bundle,
+                null
+            );
+        }
     }
 }

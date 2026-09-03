@@ -1,3 +1,4 @@
+using System;
 using SaberFactory.Configuration;
 using SaberFactory.DataStore;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace SaberFactory.Models.Whacker
         private readonly PluginConfig _config;
         private readonly WhackerModel.Factory _factory;
 
-        public WhackerModelLoader(WhackerModel.Factory factory,PluginConfig config)
+        public WhackerModelLoader(WhackerModel.Factory factory, PluginConfig config)
         {
             _factory = factory;
             _config = config;
@@ -23,10 +24,12 @@ namespace SaberFactory.Models.Whacker
             if (rightSaber == null)
             {
                 var newParent = new GameObject("RightSaber").transform;
-                newParent.SetParent(storeAsset.Prefab.transform, false);
+                newParent.parent = storeAsset.Prefab.transform;
 
                 rightSaber = Object.Instantiate(leftSaber, newParent, false);
+                rightSaber.transform.position = Vector3.zero;
                 rightSaber.transform.localScale = new Vector3(-1, 1, 1);
+
                 rightSaber.name = "RightSaberMirror";
 
                 rightSaber = newParent.gameObject;
@@ -34,16 +37,34 @@ namespace SaberFactory.Models.Whacker
             }
 
             var manifest = ((WhackerStoreAsset)storeAsset).Manifest;
-            var storeAssetLeft = new WhackerStoreAsset(storeAsset.RelativePath, leftSaber, storeAsset.AssetBundle, manifest);
-            var storeAssetRight = new WhackerStoreAsset(storeAsset.RelativePath, rightSaber, storeAsset.AssetBundle, manifest);
+
+            var storeAssetLeft = new WhackerStoreAsset(
+                storeAsset.RelativePath,
+                leftSaber,
+                storeAsset.AssetBundle,
+                manifest
+            );
+
+            var storeAssetRight = new WhackerStoreAsset(
+                storeAsset.RelativePath,
+                rightSaber,
+                storeAsset.AssetBundle,
+                manifest
+            );
 
             var modelLeft = _factory.Create(storeAssetLeft);
             var modelRight = _factory.Create(storeAssetRight);
 
-            modelRight.SaberSlot = ESaberSlot.Right;
             modelLeft.SaberSlot = ESaberSlot.Left;
+            modelRight.SaberSlot = ESaberSlot.Right;
 
-            var composition = new ModelComposition(AssetTypeDefinition.CustomSaber, modelLeft, modelRight, storeAsset.Prefab);
+            var composition = new ModelComposition(
+                AssetTypeDefinition.CustomSaber,
+                modelLeft,
+                modelRight,
+                storeAsset.Prefab
+            );
+
             composition.SetFavorite(_config.IsFavorite(storeAsset.RelativePath));
 
             return composition;
@@ -51,13 +72,26 @@ namespace SaberFactory.Models.Whacker
 
         private (GameObject leftSaber, GameObject rightSaber) GetSabers(Transform root)
         {
-            GameObject leftSaber = null, rightSaber = null;
+            GameObject leftSaber = null;
+            GameObject rightSaber = null;
+
             foreach (Transform t in root)
             {
-                if (t.name == "LeftSaber") leftSaber = t.gameObject;
-                else if (t.name == "RightSaber") rightSaber = t.gameObject;
-                if (leftSaber != null && rightSaber != null) break;
+                if (t.name == "LeftSaber")
+                {
+                    leftSaber = t.gameObject;
+                }
+                else if (t.name == "RightSaber")
+                {
+                    rightSaber = t.gameObject;
+                }
+
+                if (leftSaber != null && rightSaber != null)
+                {
+                    break;
+                }
             }
+
             return (leftSaber, rightSaber);
         }
     }
