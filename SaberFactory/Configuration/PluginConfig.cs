@@ -36,12 +36,6 @@ namespace SaberFactory.Configuration
         // Show additional trail settings
         public bool ShowAdvancedTrailSettings { get; set; } = false;
 
-        // Show downloadable (and featured) saber on the top of the saber selection list
-        public bool ShowDownloadableSabers { get; set; } = true;
-
-        // Not used anymore
-        public bool AutoUpdateTrail { get; set; } = true;
-
         // Show the the "sabers" button in the gameplay settings (button beside "colors")
         public bool ShowGameplaySettingsButton { get; set; } = true;
 
