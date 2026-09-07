@@ -47,9 +47,20 @@ namespace SaberFactory.UI.Lib.BSML
 
         { }
 
+#if V_1_29_1
+        private static bool _registered = false; 
+#endif
+
         private void RegisterAll(BSMLParser parser)
         {
-           
+#if V_1_29_1
+            if (_registered)
+            {
+                return;
+            } 
+#endif
+
+
             foreach (var tag in InstantiateOfType<BSMLTag>())
             {
                 parser.RegisterTag(tag);
@@ -72,8 +83,12 @@ namespace SaberFactory.UI.Lib.BSML
 #endif
 
             _logger.Info("Registered Custom Components");
+#if V_1_29_1
+            _registered = true;
+#endif
 
-            
+
+
         }
 
         [Conditional("DEBUG")]
