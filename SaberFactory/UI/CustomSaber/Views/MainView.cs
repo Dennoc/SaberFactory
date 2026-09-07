@@ -26,6 +26,17 @@ namespace SaberFactory.UI.CustomSaber.Views
 
         public void ChangeCategory(ENavigationCategory category)
         {
+            if (category == ENavigationCategory.Favorites)
+            {
+                if (!_navViews.TryGetValue(ENavigationCategory.Saber, out var fav)) return;
+                if (fav is SubView subView)
+                {
+                    SubViewSwitcher.SwitchView(subView);
+                }
+                return;
+            }
+            
+            
             if (_navViews.TryGetValue(category, out var view))
             {
                 if (view is SubView subView)

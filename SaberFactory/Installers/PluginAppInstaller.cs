@@ -7,9 +7,11 @@ using SaberFactory.Helpers;
 using SaberFactory.Instances;
 using SaberFactory.Instances.PostProcessors;
 using SaberFactory.Instances.Trail;
+using SaberFactory.Loaders;
 using SaberFactory.Misc;
 using SaberFactory.Models;
 using SaberFactory.Models.CustomSaber;
+using SaberFactory.Models.Whacker;
 using SaberFactory.Serialization;
 using Zenject;
 using Logger = IPA.Logging.Logger;
@@ -62,6 +64,7 @@ namespace SaberFactory.Installers
             Container.BindInterfacesAndSelfTo<EmbeddedAssetLoader>().AsSingle();
 
             Container.Bind<CustomSaberModelLoader>().AsSingle();
+            Container.Bind<WhackerModelLoader>().AsSingle();
 
             Container.Bind<TextureStore>().AsSingle();
 
@@ -105,9 +108,11 @@ namespace SaberFactory.Installers
         private void InstallFactories()
         {
             Container.BindFactory<StoreAsset, CustomSaberModel, CustomSaberModel.Factory>();
+            Container.BindFactory<StoreAsset, WhackerModel, WhackerModel.Factory>();
 
             Container.BindFactory<BasePieceModel, BasePieceInstance, BasePieceInstance.Factory>()
                 .FromFactory<InstanceFactory>();
+            
             Container.BindFactory<SaberModel, SaberInstance, SaberInstance.Factory>();
         }
     }

@@ -9,8 +9,10 @@ using SaberFactory.Helpers;
 using SaberFactory.Instances;
 using SaberFactory.Instances.CustomSaber;
 using SaberFactory.Instances.Trail;
+using SaberFactory.Instances.Whacker;
 using SaberFactory.Models;
 using SaberFactory.Models.CustomSaber;
+using SaberFactory.Models.Whacker;
 using SaberFactory.UI.CustomSaber.CustomComponents;
 using SaberFactory.UI.CustomSaber.Popups;
 using SaberFactory.UI.Lib;
@@ -185,6 +187,12 @@ namespace SaberFactory.UI.CustomSaber.Views
                 var model = (CustomSaberModel)customsaber.Model;
                 model.TrailModel = trailModel;
             }
+            
+            if (_editorInstanceManager.CurrentPiece is WhackerInstance wi)
+            {
+                var model = (WhackerModel)wi.Model;
+                model.TrailModel = trailModel;
+            }
         }
 
         private bool CopyFromTrailModel(TrailModel trailModel, List<CustomTrail> trailList)
@@ -192,6 +200,30 @@ namespace SaberFactory.UI.CustomSaber.Views
             if (_editorInstanceManager.CurrentPiece is CustomSaberInstance customsaber)
             {
                 var model = (CustomSaberModel)customsaber.Model;
+
+                if (model.TrailModel == null)
+                {
+                    model.TrailModel = new TrailModel(
+                        Vector3.zero,
+                        0.5f,
+                        12,
+                        new MaterialDescriptor(null),
+                        0f,
+                        TextureWrapMode.Clamp) { TrailOriginTrails = trailList };
+
+                    model.TrailModel.CopyFrom(trailModel);
+                    model.TrailModel.Material.UpdateBackupMaterial(false);
+
+                    return true;
+                }
+
+                model.TrailModel.CopyFrom(trailModel);
+                model.TrailModel.TrailOriginTrails = trailList;
+            }
+            
+            if (_editorInstanceManager.CurrentPiece is WhackerInstance wi)
+            {
+                var model = (WhackerModel)wi.Model;
 
                 if (model.TrailModel == null)
                 {
@@ -222,6 +254,23 @@ namespace SaberFactory.UI.CustomSaber.Views
             {
                 _instanceTrailData.RevertMaterialForCustomSaber(cs.Model as CustomSaberModel);
                 var tm = _editorInstanceManager.CurrentModelComposition?.GetLeft().CastChecked<CustomSaberModel>()?.GrabTrail(false);
+                if (tm is { })
+                {
+                    SetTrailModel(tm);
+                }
+            }
+            
+            if (_editorInstanceManager.CurrentPiece is WhackerInstance wi)
+            {
+
+                _instanceTrailData.RevertMaterialForWhacker(wi.Model as WhackerModel);
+
+
+                var tm = _editorInstanceManager.CurrentModelComposition?
+                    .GetLeft()
+                    .CastChecked<WhackerModel>()
+                    ?.GrabTrail(false);
+                
                 if (tm is { })
                 {
                     SetTrailModel(tm);

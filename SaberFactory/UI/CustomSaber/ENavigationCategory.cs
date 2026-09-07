@@ -2,6 +2,7 @@
 {
     internal enum ENavigationCategory
     {
+        Favorites,
         Saber,
         Trail,
         Settings,

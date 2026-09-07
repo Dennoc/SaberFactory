@@ -9,6 +9,7 @@ using SaberFactory.Installers;
 using SaberFactory.Instances.CustomSaber;
 using SaberFactory.Instances.PostProcessors;
 using SaberFactory.Instances.Trail;
+using SaberFactory.Instances.Whacker;
 using SaberFactory.Models;
 using SiraUtil.Logging;
 using UnityEngine;
@@ -136,9 +137,20 @@ namespace SaberFactory.Instances
 
         private void SetupTrailData()
         {
-            if (GetCustomSaber(out var customsaber))
+            if (PieceCollection.TryGetPiece(
+                AssetTypeDefinition.CustomSaber,
+                out var instance))
             {
-                return;
+                switch (instance)
+                {
+                    case CustomSaberInstance customSaber:
+                        _instanceTrailData = customSaber.InstanceTrailData;
+                        return;
+
+                    case WhackerInstance whacker:
+                        _instanceTrailData = whacker.InstanceTrailData;
+                        return;
+                }
             }
 
             // TODO: Setup sf trail data
@@ -213,30 +225,39 @@ namespace SaberFactory.Instances
                 piece.Dispose();
             }
         }
-
-        private bool GetCustomSaber(out CustomSaberInstance customSaberInstance)
-        {
-            if (PieceCollection.TryGetPiece(AssetTypeDefinition.CustomSaber, out var instance))
-            {
-                customSaberInstance = instance as CustomSaberInstance;
-                return true;
-            }
-
-            customSaberInstance = null;
-            return false;
-        }
-
-        internal InstanceTrailData GetTrailData(out List<CustomTrail> secondaryTrails)
+        
+        internal InstanceTrailData GetTrailData(
+            out List<CustomTrail> secondaryTrails)
         {
             secondaryTrails = null;
 
-            if (GetCustomSaber(out var customsaber))
+            if (!PieceCollection.TryGetPiece(
+                AssetTypeDefinition.CustomSaber,
+                out var instance))
             {
-                secondaryTrails = customsaber.InstanceTrailData?.SecondaryTrails.Select(x => x.Trail).ToList();
-                return customsaber.InstanceTrailData;
+                return _instanceTrailData;
             }
 
-            return _instanceTrailData;
+            switch (instance)
+            {
+                case CustomSaberInstance customSaber:
+                    secondaryTrails = customSaber.InstanceTrailData?
+                        .SecondaryTrails?
+                        .Select(x => x.Trail)
+                        .ToList();
+
+                    return customSaber.InstanceTrailData;
+                case WhackerInstance whacker:
+                    secondaryTrails = whacker.InstanceTrailData?
+                        .SecondaryTrails?
+                        .Select(x => x.Trail)
+                        .ToList();
+
+                    return whacker.InstanceTrailData;
+                default:
+                    return _instanceTrailData;
+            }
+
         }
 
         public void SetSaberWidth(float width)

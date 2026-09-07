@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SaberFactory.Helpers;
 using SaberFactory.Models.CustomSaber;
+using SaberFactory.Models.Whacker;
 using SaberFactory.Serialization;
 using UnityEngine;
 
@@ -76,9 +77,14 @@ namespace SaberFactory.Models
 
         public TrailModel GetTrailModel()
         {
-            if (GetCustomSaber(out var customsaber))
+            if (GetCustomSaberOrWhacker(out var model))
             {
-                return customsaber.TrailModel;
+                return model switch
+                {
+                    CustomSaberModel customSaber => customSaber.TrailModel,
+                    WhackerModel whacker => whacker.TrailModel,
+                    _ => null
+                };
             }
 
             return TrailModel;
@@ -92,15 +98,22 @@ namespace SaberFactory.Models
             }
         }
 
-        public bool GetCustomSaber(out CustomSaberModel customsaber)
+        public bool GetCustomSaberOrWhacker(out BasePieceModel customSaber)
         {
-            if (PieceCollection.TryGetPiece(AssetTypeDefinition.CustomSaber, out var model))
+            if (PieceCollection.TryGetPiece(
+                AssetTypeDefinition.CustomSaber,
+                out var model))
             {
-                customsaber = model as CustomSaberModel;
-                return true;
+                switch (model)
+                {
+                    case CustomSaberModel cs:
+                    case WhackerModel wi:
+                        customSaber = model;
+                        return true;
+                }
             }
 
-            customsaber = null;
+            customSaber = null;
             return false;
         }
     }

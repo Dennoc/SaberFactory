@@ -46,11 +46,11 @@ namespace SaberFactory.UI
             RefreshDirectoryString();
         }
 
-        public List<ICustomListItem> Process(IEnumerable<ICustomListItem> items, bool isSearchMode = false)
+        public List<ICustomListItem> Process(IEnumerable<ICustomListItem> items, bool isSearchMode = false, bool isFavoriteMode = false)
         {
-            var itemsList = !isSearchMode ? FilterForDir(items, _currentDirectory).ToList() : items.ToList();
-
-            if (!isSearchMode)
+            var itemsList = !isSearchMode && !isFavoriteMode ? FilterForDir(items, _currentDirectory).ToList() : items.ToList();
+            
+            if (!isSearchMode && !isFavoriteMode)
             {
                 var addedFolders = new HashSet<string>();
 
@@ -81,7 +81,12 @@ namespace SaberFactory.UI
                     itemsList.Insert(0, new CustomList.ListDirectory(UpDirIndicator));
                 }
             }
-            
+
+            if (isFavoriteMode)
+            {
+                itemsList = itemsList.Where(x => x.IsFavorite).ToList();
+            }
+
             return itemsList;
         }
 

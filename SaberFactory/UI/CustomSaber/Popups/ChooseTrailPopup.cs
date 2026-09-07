@@ -8,6 +8,7 @@ using SaberFactory.DataStore;
 using SaberFactory.Helpers;
 using SaberFactory.Models;
 using SaberFactory.Models.CustomSaber;
+using SaberFactory.Models.Whacker;
 using SaberFactory.UI.CustomSaber.Views;
 using SaberFactory.UI.Lib;
 using Zenject;
@@ -64,6 +65,11 @@ namespace SaberFactory.UI.CustomSaber.CustomComponents
             if (comp?.GetLeft() is CustomSaberModel cs)
             {
                 return (cs.GrabTrail(true), SaberHelpers.GetTrails(cs.Prefab));
+            }
+            
+            if (comp?.GetLeft() is WhackerModel wm)
+            {
+                return (wm.GrabTrail(true), SaberHelpers.GetTrails(wm.Prefab));
             }
 
             return default;
