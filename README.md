@@ -5,7 +5,7 @@
 <p align="center">
     <a alt="total downloads">
         <img src="https://img.shields.io/github/downloads/Dennoo11/SaberFactory/total" /></a>
-    <a href="https://github.com/ToniMacaroni/SaberFactory/releases" alt="latest version">
+    <a href="https://github.com/Dennoc/SaberFactory/releases" alt="latest version">
         <img src="https://img.shields.io/github/v/tag/Dennoo11/SaberFactory?label=version" /></a>
 </p>
 <p align="center">
@@ -35,7 +35,7 @@ Change the shape, shaders, material properties, textures and more of parts and s
 
 ## I have a saber that's broken and it appears in the left eye 
 Beat Saber 1.30+ switch to Single-Pass Instanced (SPI) which broke most sabers since they were compiled in Single-Pass Stero (SPS)
-this was removed in Unity 2020.1+ you will have to get [AssetBundleLoadingTools](https://beatmods.com/mods/306) and enable Muilt-Pass in the mod settings.
+this was removed in Unity 2020.1+ you will have to enable Muilt-Pass in the mod settings in [AssetBundleLoadingTools](https://beatmods.com/mods/306)
 
 **For Saber Modelers**
 if you want to miragte your saber to Unity 2021+ Single-Pass Instanced (SPI) you can read more here https://bsmg.wiki/models/shader-migration.html
