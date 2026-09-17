@@ -342,12 +342,6 @@
     <EmbeddedResource Include="UI\CustomSaber\Popups\MessagePopup.bsml">
       <DependentUpon>MessagePopup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\CustomSaber\Views\Modifier\MainModifierPanelView.bsml">
-      <DependentUpon>MainModifierPanelView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Modifiers\TransformModifierView.bsml">
-      <DependentUpon>TransformModifierImpl.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Icons\blade-icon.png" />

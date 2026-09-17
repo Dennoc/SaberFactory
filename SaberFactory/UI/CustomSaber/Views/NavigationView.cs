@@ -48,16 +48,10 @@ namespace SaberFactory.UI.CustomSaber.Views
                 ClickedCategory,
                 "Transform settings");
 
-            var propButton = new NavButtonWrapper(
-                ENavigationCategory.Modifier,
-                "SaberFactory.Resources.Icons.wrench.png",
-                ClickedCategory,
-                "Saber modifier");
 
             _navButtons.Add(saberButton);
             _navButtons.Add(trailButton);
             _navButtons.Add(transformButton);
-            _navButtons.Add(propButton);
         }
 
         public event Action<ENavigationCategory> OnCategoryChanged;

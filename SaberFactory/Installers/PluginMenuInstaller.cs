@@ -27,7 +27,7 @@ namespace SaberFactory.Installers
 
             Container.Bind<MenuSaberProvider>().AsSingle();
 
-            Container.BindInterfacesAndSelfTo<GizmoAssets>().AsSingle();
+            
 
 #if DEBUG
             //Container.Bind<DebugMenu>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();

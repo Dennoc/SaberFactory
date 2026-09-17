@@ -1,7 +1,6 @@
 using HarmonyLib;
 using SaberFactory.Configuration;
 using SaberFactory.Helpers;
-using SaberFactory.ProjectComponents;
 using UnityEngine;
 
 namespace SaberFactory.Instances.PostProcessors

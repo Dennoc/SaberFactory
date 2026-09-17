@@ -233,33 +233,6 @@ namespace SaberFactory.Models.CustomSaber
             trail.PointEnd.SetParent(Prefab.transform, true);
         }
 
-        public override async Task FromJson(JObject obj, Serializer serializer)
-        {
-            await base.FromJson(obj, serializer);
-            var trailModelToken = obj[nameof(TrailModel)];
-            if (trailModelToken != null)
-            {
-                if (TrailModel == null)
-                {
-                    TrailModel = new TrailModel();
-                }
-
-                await TrailModel.FromJson((JObject)trailModelToken, serializer);
-            }
-        }
-
-        public override async Task<JToken> ToJson(Serializer serializer)
-        {
-            var obj = (JObject)await base.ToJson(serializer);
-            
-            if (TrailModel != null)
-            {
-                obj.Add(nameof(TrailModel), await TrailModel.ToJson(serializer));
-            }
-
-            return obj;
-        }
-
         internal class Factory : PlaceholderFactory<StoreAsset, CustomSaberModel>
         { }
 

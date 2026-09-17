@@ -73,22 +73,4 @@
         <Folder Include="ThirdParty\" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Include="..\SaberFactory\ProjectComponents\ComponentModifier.cs">
-        <Link>ComponentModifier.cs</Link>
-      </Compile>
-      <Compile Include="..\SaberFactory\ProjectComponents\SaberModifierCollection.cs">
-        <Link>SaberModifierCollection.cs</Link>
-      </Compile>
-      <Compile Include="..\SaberFactory\ProjectComponents\TransformModifier.cs">
-        <Link>TransformModifier.cs</Link>
-      </Compile>
-      <Compile Include="..\SaberFactory\ProjectComponents\VisibilityModifier.cs">
-        <Link>VisibilityModifier.cs</Link>
-      </Compile>
-      <Compile Include="..\SaberFactory\ProjectComponents\HelpAttribute.cs">
-	      <Link>HelpAttribute.cs</Link>
-      </Compile>
-    </ItemGroup>
-
 </Project>

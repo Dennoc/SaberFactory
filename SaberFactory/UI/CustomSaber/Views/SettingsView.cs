@@ -4,7 +4,6 @@ using System.Threading;
 using BeatSaberMarkupLanguage.Attributes;
 using SaberFactory.Configuration;
 using SaberFactory.Editor;
-using SaberFactory.ProjectComponents;
 using SaberFactory.UI.CustomSaber.CustomComponents;
 using SaberFactory.UI.Lib;
 using UnityEngine;
