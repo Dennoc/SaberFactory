@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using SaberFactory.DataStore;
+using SaberFactory.Helpers;
 using SaberFactory.Models.PropHandler;
 using SaberFactory.Serialization;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace SaberFactory.Models
     ///     Model related to everything that makes up a saber
     ///     like parts, halos, accessories, custom sabers
     /// </summary>
-    public class BasePieceModel : IDisposable
+    public class BasePieceModel : IDisposable, IFactorySerializable
     {
         /// <summary>
         ///     Type of the associated instance class
@@ -39,6 +40,22 @@ namespace SaberFactory.Models
 
         public virtual void Dispose()
         { }
+
+        public virtual async Task FromJson(JObject obj, Serializer serializer)
+        {
+            await PropertyBlock.FromJson((JObject)obj[nameof(PropertyBlock)], serializer);
+            
+        }
+
+        public virtual async Task<JToken> ToJson(Serializer serializer)
+        {
+            var obj = new JObject
+            {
+                { "Path", StoreAsset.RelativePath },
+                { nameof(PropertyBlock), await PropertyBlock.ToJson(serializer) },
+            };
+            return obj;
+        }
 
         public virtual void Init()
         { }

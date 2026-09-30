@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using SaberFactory.DataStore;
+using SaberFactory.Helpers;
 using SaberFactory.Serialization;
 using SiraUtil.Logging;
 using SiraUtil.Tools;
@@ -13,13 +15,11 @@ namespace SaberFactory.Models
     /// <summary>
     ///     Stores currently used left and right saber model implementation
     /// </summary>
-    public class SaberSet : ILoadingTask
+    public class SaberSet : IFactorySerializable, ILoadingTask
     {
         public SaberModel LeftSaber { get; set; }
 
         public SaberModel RightSaber { get; set; }
-
-        public Task CurrentTask { get; private set; }
 
         public bool IsEmpty => LeftSaber.IsEmpty && RightSaber.IsEmpty;
 
@@ -42,6 +42,32 @@ namespace SaberFactory.Models
 
             _ = Load();
         }
+
+        public async Task FromJson(JObject obj, Serializer serializer)
+        {
+            try
+            {
+                await LeftSaber.FromJson((JObject)obj[nameof(LeftSaber)], serializer);
+                await RightSaber.FromJson((JObject)obj[nameof(RightSaber)], serializer);
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Saber loading error:\n"+e);
+                throw;
+            }
+        }
+
+        public async Task<JToken> ToJson(Serializer serializer)
+        {
+            var obj = new JObject
+            {
+                { nameof(LeftSaber), await LeftSaber.ToJson(serializer) },
+                { nameof(RightSaber), await RightSaber.ToJson(serializer) }
+            };
+            return obj;
+        }
+
+        public Task CurrentTask { get; private set; }
 
         public void SetModelComposition(ModelComposition modelComposition)
         {

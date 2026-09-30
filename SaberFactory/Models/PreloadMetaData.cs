@@ -1,11 +1,11 @@
-﻿using BeatSaberMarkupLanguage;
+﻿using System;
+using System.IO;
+using BeatSaberMarkupLanguage;
 using SaberFactory.Helpers;
 using SaberFactory.Loaders;
 using SaberFactory.Misc;
 using SaberFactory.UI;
 using SaberFactory.UI.Lib;
-using System;
-using System.IO;
 using TMPro;
 using UnityEngine;
 
