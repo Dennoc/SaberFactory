@@ -3,9 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-#if !V_1_29_1
 using AssetBundleLoadingTools.Utilities;
-#endif
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -134,7 +132,7 @@ namespace SaberFactory.Helpers
             return await tcs.Task;
         }
 
-        #if !V_1_29_1
+        
         public static async Task<Tuple<T, AssetBundle>> LoadAssetFromAssetBundleSafeAsync<T>(string path, string assetName) where T : Object
         {
             var bundle = await AssetBundleExtensions.LoadFromFileAsync(path);
@@ -152,9 +150,9 @@ namespace SaberFactory.Helpers
 
             return new Tuple<T, AssetBundle>(asset, bundle);
         }
-        #endif
         
-        #if !V_1_29_1
+        
+        
         public static async Task<Tuple<T, AssetBundle>> LoadAssetFromAssetBundleSafeAsync<T>(byte[] bundleData, string assetName) where T : Object
         {
             var bundle = await AssetBundleExtensions.LoadFromMemoryAsync(bundleData);
@@ -172,6 +170,6 @@ namespace SaberFactory.Helpers
 
             return new Tuple<T, AssetBundle>(asset, bundle);
         }
-        #endif
+        
     }
 }

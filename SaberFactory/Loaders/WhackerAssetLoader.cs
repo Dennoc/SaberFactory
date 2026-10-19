@@ -89,17 +89,11 @@ namespace SaberFactory.Loaders
                 bundleBytes = ms.ToArray();
             }
 
-            #if V_1_29_1
-            var result = await Readers.LoadAssetFromAssetBundleAsync<GameObject>(
-                bundleBytes,
-                "_Whacker"
-            );
-            #else
             var result = await Readers.LoadAssetFromAssetBundleSafeAsync<GameObject>(
                 bundleBytes,
                 "_Whacker"
             );
-            #endif
+            
 
             if (result == null)
             {

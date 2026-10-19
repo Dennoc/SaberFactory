@@ -135,17 +135,6 @@ namespace SaberFactory.UI.CustomSaber.CustomComponents
             {
                 try
                 {
-                    #if V_1_29_1
-                    var button = componentType.component as NavButton;
-
-                    if (componentType.data.TryGetValue("onSelected", out var onToggle))
-                    {
-                        if (parserParams.actions.TryGetValue(onToggle, out var onToggleAction))
-                        {
-                            button.OnSelect += (btn, val) => { onToggleAction.Invoke(btn, val); };
-                        }
-                    }
-                    #else
                     var button = componentType.Component as NavButton;
 
                     if (componentType.Data.TryGetValue("onSelected", out var onToggle))
@@ -155,7 +144,7 @@ namespace SaberFactory.UI.CustomSaber.CustomComponents
                             button.OnSelect += (btn, val) => { onToggleAction.Invoke(btn, val); };
                         }
                     }
-                    #endif
+                    
 
 
                     base.HandleType(componentType, parserParams);

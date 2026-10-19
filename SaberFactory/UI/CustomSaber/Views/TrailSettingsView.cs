@@ -140,34 +140,23 @@ namespace SaberFactory.UI.CustomSaber.Views
             CreateTrail(_editorInstanceManager.CurrentSaber);
 
             _editorInstanceManager.OnSaberInstanceCreated += CreateTrail;
-#if V_1_29_1
-            if (_instanceTrailData != null && _pluginConfig.ControlTrailWithThumbstick)
-            {
-                _trailFloatLength = _instanceTrailData.Length;
-                _vrPlatformHelper.joystickWasNotCenteredThisFrameEvent += OnjoystickWasNotCenteredThisFrameEvent;
-            }
-#else
+
             // if (_instanceTrailData != null && _pluginConfig.ControlTrailWithThumbstick)
             // {
             //     _trailFloatLength = _instanceTrailData.Length;
             //     _vrPlatformHelper.joystickWasNotCenteredThisFrameEvent += OnjoystickWasNotCenteredThisFrameEvent;
             // }
-#endif
+
         }
 
         public override void DidClose()
         {
-#if V_1_29_1
-            if (_instanceTrailData != null && _pluginConfig.ControlTrailWithThumbstick)
-            {
-                _vrPlatformHelper.joystickWasNotCenteredThisFrameEvent -= OnjoystickWasNotCenteredThisFrameEvent;
-            }
-#else
+
             // if (_instanceTrailData != null && _pluginConfig.ControlTrailWithThumbstick)
             // {
             //     _vrPlatformHelper.joystickWasNotCenteredThisFrameEvent -= OnjoystickWasNotCenteredThisFrameEvent;
             // }
-#endif
+
             _editorInstanceManager.OnSaberInstanceCreated -= CreateTrail;
 
             _materialEditor.Close();

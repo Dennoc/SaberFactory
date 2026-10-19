@@ -122,11 +122,9 @@ namespace SaberFactory.UI.Lib.BSML
                             var node = tag.CreateObject(parent);
                             foreach (var typeHandler in typeHandlers.Where(x => x.GetType().Assembly == thisAsm))
                             {
-                                #if V_1_29_1
-                                var type = typeHandler.GetType().GetCustomAttribute<ComponentHandler>().type;
-                                #else
+                               
                                 var type = typeHandler.GetType().GetCustomAttribute<ComponentHandler>().Type;
-                                #endif
+                                
                                 if (parser.InvokeMethod<Component, BSMLParser>("GetExternalComponent", node, type) != null)
                                 {
                                     foreach (var attrAliases in typeHandler.Props.Values)
