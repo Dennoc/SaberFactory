@@ -12,11 +12,9 @@ namespace SaberFactory.Editor
 {
     internal class Pedestal
     {
-        #if V_1_29_1
-        private static readonly string PedestalPath = String.Join(".", nameof(SaberFactory), "Resources", "pedestal.old");
-        #else
+        
         private static readonly string PedestalPath = String.Join(".", nameof(SaberFactory), "Resources", "pedestal");
-        #endif
+        
 
         public bool IsVisible
         {

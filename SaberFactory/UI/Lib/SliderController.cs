@@ -11,21 +11,13 @@ namespace SaberFactory.UI.Lib
     {
         public float Value
         {
-            #if V_1_29_1
-            get => Slider.slider.value;
-            set
-            {
-                Slider.slider.value = value;
-                Slider.ReceiveValue();
-            }
-            #else
             get => Slider.Slider.value;
             set
             {
                 Slider.Slider.value = value;
                 Slider.ReceiveValue();
             }
-            #endif
+            
         }
 
         public int IntValue
@@ -50,11 +42,8 @@ namespace SaberFactory.UI.Lib
             }
 
             _currentEvent = action;
-            #if V_1_29_1
-                Slider.slider.valueDidChangeEvent += _currentEvent;
-            #else
-                Slider.Slider.valueDidChangeEvent += _currentEvent;
-            #endif
+            Slider.Slider.valueDidChangeEvent += _currentEvent;
+            
         }
 
         public override void RemoveEvent()
@@ -63,22 +52,16 @@ namespace SaberFactory.UI.Lib
             {
                 return;
             }
-
-            #if V_1_29_1
-                Slider.slider.valueDidChangeEvent -= _currentEvent;
-            #else
-                Slider.Slider.valueDidChangeEvent -= _currentEvent;
-            #endif
+            Slider.Slider.valueDidChangeEvent -= _currentEvent;
+            
             _currentEvent = null;
         }
 
         public override string GetId()
         {
-            #if V_1_29_1
-            return ExternalComponents.components.First(x => x.name == "NameText").Cast<TextMeshProUGUI>().text;
-            #else
+          
             return ExternalComponents.Components.First(x => x.name == "NameText").Cast<TextMeshProUGUI>().text;
-            #endif
+         
         }
 
         public override void SetValue(object val)
