@@ -203,10 +203,6 @@
         <None Remove="Serialization\MeshRendererModifierView.bsml" />
         <None Remove="UI\CustomSaber\CustomSaberUiComposition.css" />
         <EmbeddedResource Include="UI\CustomSaber\BaseUiComposition.css" />
-        <None Remove="UI\PatreonView.bsml" />
-        <EmbeddedResource Include="UI\PatreonView.bsml" />
-        <None Remove="Resources\UI\patreon-medium-button.png" />
-        <EmbeddedResource Include="Resources\UI\patreon-button.png" />
     </ItemGroup>
 
     <ItemGroup>
