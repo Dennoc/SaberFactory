@@ -1,7 +1,6 @@
 using HarmonyLib;
 using SaberFactory.Configuration;
 using SaberFactory.Helpers;
-using SaberFactory.ProjectComponents;
 using UnityEngine;
 
 namespace SaberFactory.Instances.PostProcessors
@@ -23,10 +22,6 @@ namespace SaberFactory.Instances.PostProcessors
             gameobject.GetComponentsInChildren<AudioSource>(true).Do(x => x.volume *= _config.SaberAudioVolumeMultiplier);
             gameobject.GetComponentsInChildren<Renderer>(true).Do(x => { x.sortingOrder = 3; });
 
-            if (gameobject.GetComponentInChildren<SFSaberSound>() is { } saberSound)
-            {
-                saberSound.ConfigVolume = _config.SwingSoundVolume;
-            }
         }
     }
 }

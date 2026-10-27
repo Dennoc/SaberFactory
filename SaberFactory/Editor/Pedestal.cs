@@ -97,16 +97,6 @@ namespace SaberFactory.Editor
             IsVisible = false;
         }
 
-        public void SetText(int line, string text)
-        {
-            if (!_textMeshPro)
-            {
-                return;
-            }
-
-            _lines[line] = text;
-            _textMeshPro.text = string.Join("\n", _lines);
-        }
 
         private async Task<GameObject> GetPedestalAsset()
         {
@@ -157,13 +147,6 @@ namespace SaberFactory.Editor
                 clr.a = 0;
                 _spiralMat.color = clr;
             }
-        }
-
-        public void InitSpiral()
-        {
-            var clr = _spiralMat.color;
-            clr.a = 1;
-            _spiralMat.color = clr;
         }
     }
 }

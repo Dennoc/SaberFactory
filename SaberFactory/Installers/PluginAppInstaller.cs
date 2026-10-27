@@ -80,8 +80,6 @@ namespace SaberFactory.Installers
             Container.Bind<SaberFileWatcher>().AsSingle();
             Container.Bind<RandomUtil>().AsSingle();
 
-            Container.BindInterfacesAndSelfTo<SaberClashCustomizer>().AsSingle();
-
             InstallFactories();
             InstallMiddlewares();
         }

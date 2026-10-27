@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BeatSaberMarkupLanguage;
+﻿using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using HMUI;
 using IPA.Loader;
@@ -19,7 +12,15 @@ using SaberFactory.Models;
 using SaberFactory.UI.CustomSaber.CustomComponents;
 using SaberFactory.UI.CustomSaber.Popups;
 using SaberFactory.UI.Lib;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Profiling.Memory.Experimental;
 using Zenject;
 using Debug = UnityEngine.Debug;
 
@@ -59,10 +60,9 @@ namespace SaberFactory.UI.CustomSaber.Views
 
         [Inject] private readonly Editor.Editor _editor = null;
         [Inject] private readonly EditorInstanceManager _editorInstanceManager = null;
-
+        [Inject(Id = nameof(SaberFactory))] private readonly PluginMetadata _metadata = null;
         [Inject] private readonly MainAssetStore _mainAssetStore = null;
         [Inject] private readonly PluginConfig _pluginConfig = null;
-        [Inject] private readonly List<RemoteLocationPart> _remoteParts = null;
         [Inject] private readonly SaberFileWatcher _saberFileWatcher = null;
         [Inject] private readonly SaberSet _saberSet = null;
         private ModelComposition _currentComposition;
@@ -105,19 +105,10 @@ namespace SaberFactory.UI.CustomSaber.Views
             _dirManager = new ListItemDirectoryManager(_mainAssetStore.AdditionalCustomSaberFolders);
             _saberList.OnItemSelected += SaberSelected;
             _saberList.OnCategorySelected += DirectorySelected;
-            _listTitle = "";
+            _listTitle = "<color=#2f6594>Saber Factory " + _metadata.HVersion + "</color>";
             _saberList.SetText(_listTitle);
             await LoadSabers();
 
-            if (CommonHelpers.IsDate(null, 10) &&
-                _pluginConfig.SpecialBackground &&
-                _saberList.transform.GetChild(0) is {} child && child.GetComponent<ImageView>() is { } imageView)
-            {
-                imageView.sprite = Utilities.FindSpriteInAssembly("SaberFactory.Resources.UI.halloween_bg.png");
-                imageView.overrideSprite = imageView.sprite;
-                // ColorUtility.TryParseHtmlString("#c5c5c5", out var newBgColor);
-                // imageView.color = newBgColor;
-            }
         }
 
         private async void DirectorySelected(string dir)
@@ -169,27 +160,6 @@ namespace SaberFactory.UI.CustomSaber.Views
             var items = new List<ICustomListItem>(metaEnumerable);
             var loadedNames = items.Select(x => x.ListName).ToList();
 
-            var addedDownloadables = 0;
-
-            // Show downloadable sabers
-            if (_pluginConfig.ShowDownloadableSabers)
-            {
-                var idx = items.Count(x => x.IsFavorite);
-
-                // if the saber isn't aleady present
-                // add the downloadable option
-                foreach (var remotePart in _remoteParts)
-                {
-                    if (!loadedNames.Contains(remotePart.ListName))
-                    {
-                        items.Insert(idx, remotePart);
-                        addedDownloadables++;
-                    }
-                }
-            }
-
-            // If there are only downloadable sabers present show the modelsaber hint
-            ShowDownloadSabersPopup = items.Count() <= addedDownloadables;
 
             // Fill the saber list with the currently selected directory
             _saberList.SetItems(_dirManager.Process(items));
@@ -199,7 +169,6 @@ namespace SaberFactory.UI.CustomSaber.Views
             if (_currentComposition != null)
             {
                 _saberList.Select(_mainAssetStore.GetMetaDataForComposition(_currentComposition)?.ListName, !scrollToTop);
-                UpdatePedestalText(_currentComposition);
             }
 
             if (scrollToTop)
@@ -236,25 +205,7 @@ namespace SaberFactory.UI.CustomSaber.Views
                 var relativePath = PathTools.ToRelativePath(metaData.AssetMetaPath.Path);
                 _currentComposition = await _mainAssetStore[relativePath];
             }
-            else if (item is RemoteLocationPart remotePart)
-            {
-                _loadingPopup.Show($"Downloading {remotePart.ListName}...");
-                var result = await remotePart.Download(CancellationToken.None);
-                if (result == null || !result.Item1)
-                {
-                    _loadingPopup.Hide();
-                    Logger.Error("Couldn't download remote saber: " + remotePart.RemoteLocation);
-                    return;
-                }
-
-                reloadList = true;
-                var relPath = result.Item2;
-                _currentComposition =
-                    await _mainAssetStore.CreateMetaData(
-                        new AssetMetaPath(new FileInfo(Path.Combine(UnityGame.InstallPath, relPath))));
-                _remoteParts.Remove(remotePart);
-                _loadingPopup.Hide();
-            }
+            
             else if (item is ModelComposition comp)
             {
                 _currentComposition = comp;
@@ -271,25 +222,14 @@ namespace SaberFactory.UI.CustomSaber.Views
                 await ShowSabers();
             }
 
-            _editor.FlashPedestal(new Color(0.24f, 0.77f, 1f));
         }
 
         private void CompositionDidChange(ModelComposition comp)
         {
             _currentComposition = comp;
-            UpdatePedestalText(comp);
             _saberList.Select(comp);
         }
 
-        private void UpdatePedestalText(ICustomListItem item)
-        {
-            var saberName = item.ListName;
-            if (saberName.Length > 12)
-            {
-                saberName = saberName.Substring(0, 9) + "...";
-            }
-            _editor.SetPedestalText(0, saberName);
-        }
 
         private void UpdateUi()
         {

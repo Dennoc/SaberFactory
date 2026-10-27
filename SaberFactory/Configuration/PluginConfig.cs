@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 
 namespace SaberFactory.Configuration
 {
-    internal class PluginConfig : INotifyPropertyChanged
+    internal class PluginConfig 
     {
         public bool Enabled { get; set; } = true;
 
@@ -20,9 +20,6 @@ namespace SaberFactory.Configuration
 
         // Enable saber events
         public bool EnableEvents { get; set; } = true;
-
-        // Use your own saber instead of the one dictated by the song
-        public bool OverrideSongSaber { get; set; } = false;
 
         // Randomize saber on each song start
         public bool RandomSaber { get; set; } = false;
@@ -37,8 +34,6 @@ namespace SaberFactory.Configuration
 
         public bool ShowAdvancedTrailSettings { get; set; } = false;
 
-        public bool ShowDownloadableSabers { get; set; } = true;
-
         public bool AutoUpdateTrail { get; set; } = true;
 
         public bool ShowGameplaySettingsButton { get; set; } = true;
@@ -47,13 +42,7 @@ namespace SaberFactory.Configuration
 
         public float SaberAudioVolumeMultiplier { get; set; } = 1;
 
-        public bool SpecialBackground { get; set; } = true;
-
         public bool ReloadOnSaberUpdate { get; set; } = false;
-
-        public float SwingSoundVolume { get; set; } = 1;
-
-        public bool EnableCustomBurnmarks { get; set; } = true;
 
         // How many threads to spawn when loading all sabers
         // ! Not used as of right now !
@@ -99,14 +88,6 @@ namespace SaberFactory.Configuration
         public bool IsFavorite(string path)
         {
             return Favorites.Contains(path);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

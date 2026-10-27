@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using BeatSaberMarkupLanguage;
+using SaberFactory.Helpers;
 using SaberFactory.Loaders;
+using SaberFactory.Misc;
 using SaberFactory.UI;
 using SaberFactory.UI.Lib;
 using TMPro;
@@ -12,6 +13,7 @@ namespace SaberFactory.Models
 {
     public class PreloadMetaData : ICustomListItem
     {
+
         public AssetTypeDefinition AssetTypeDefinition { get; private set; }
 
         public Texture2D CoverTex
@@ -75,21 +77,31 @@ namespace SaberFactory.Models
                 File.Delete(AssetMetaPath.MetaDataPath);
             }
 
-            var ser = new SerializableMeta();
-            ser.Name = ListName;
-            ser.Author = ListAuthor;
-            ser.AssetTypeDefinition = AssetTypeDefinition;
-
+            byte[] coverData = null;
             if (_coverSprite != null)
             {
                 var tex = _coverSprite.texture;
-                ser.CoverData = GetTextureData(tex);
+                coverData = GetTextureData(tex);
             }
 
-            var fs = new FileStream(AssetMetaPath.MetaDataPath, FileMode.Create, FileAccess.Write, FileShare.Write);
-            var formatter = new BinaryFormatter();
-            formatter.Serialize(fs, ser);
-            fs.Close();
+            using (var fs = new FileStream(AssetMetaPath.MetaDataPath, FileMode.Create, FileAccess.Write, FileShare.Write))
+            using (var writer = new BinaryWriter(fs))
+            {
+                writer.Write(ListName ?? string.Empty);
+                writer.Write(ListAuthor ?? string.Empty);
+                writer.Write((int)AssetTypeDefinition.AssetType);
+                writer.Write((int)AssetTypeDefinition.AssetSubType);
+
+                if (coverData != null)
+                {
+                    writer.Write(coverData.Length);
+                    writer.Write(coverData);
+                }
+                else
+                {
+                    writer.Write(0);
+                }
+            }
         }
 
         public void LoadFromFile()
@@ -99,15 +111,18 @@ namespace SaberFactory.Models
 
         public void LoadFromFile(string path)
         {
-            var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var formatter = new BinaryFormatter();
-            var ser = (SerializableMeta)formatter.Deserialize(fs);
-            fs.Close();
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var reader = new BinaryReader(fs))
+            {
+                ListName = reader.ReadString();
+                ListAuthor = reader.ReadString();
+                var assetType = (EAssetType)reader.ReadInt32();
+                var assetSubType = (EAssetSubType)reader.ReadInt32();
+                AssetTypeDefinition = new AssetTypeDefinition(assetType, assetSubType);
 
-            ListName = ser.Name;
-            ListAuthor = ser.Author;
-            _coverData = ser.CoverData;
-            AssetTypeDefinition = ser.AssetTypeDefinition;
+                var coverLen = reader.ReadInt32();
+                _coverData = coverLen > 0 ? reader.ReadBytes(coverLen) : null;
+            }
 
             LoadSprite();
         }
@@ -146,21 +161,12 @@ namespace SaberFactory.Models
 
         private Texture2D LoadTexture()
         {
-            return _coverData == null ? null : Utilities.LoadTextureRaw(_coverData);
+            return _coverData == null ? null : TextureUtilities.LoadTextureRaw(_coverData);
         }
 
         private Sprite LoadSprite()
         {
             return CoverTex == null ? null : Utilities.LoadSpriteFromTexture(CoverTex);
-        }
-
-        [Serializable]
-        internal class SerializableMeta
-        {
-            public AssetTypeDefinition AssetTypeDefinition;
-            public string Author;
-            public byte[] CoverData;
-            public string Name;
         }
     }
 }

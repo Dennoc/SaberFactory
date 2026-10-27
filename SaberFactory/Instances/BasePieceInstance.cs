@@ -29,7 +29,6 @@ namespace SaberFactory.Instances
             Model = model;
             GameObject = Instantiate();
             CachedTransform = GameObject.transform;
-            model.ModifyableComponentManager.SetInstance(GameObject);
         }
 
         public virtual void Dispose()

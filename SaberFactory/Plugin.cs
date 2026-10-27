@@ -48,11 +48,6 @@ namespace SaberFactory
             zenjector.Install<PluginMenuInstaller>(Location.Menu);
             zenjector.Install<PluginGameInstaller>(Location.Player | Location.MultiPlayer);
 
-            zenjector.Mutate<SaberBurnMarkArea>("Environment", (ctx, ogBurnMark) =>
-            {
-                var newBurner = CommonHelpers.Upgrade(ogBurnMark, typeof(CustomSaberBurnMarkArea));
-                ctx.Container.QueueForInject(newBurner);
-            });
         }
 
         [OnEnable]

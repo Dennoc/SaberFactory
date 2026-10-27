@@ -51,7 +51,6 @@ namespace SaberFactory.Editor
         private bool _isFirstActivation = true;
         private bool _isSaberInHand;
         private SaberInstance _spawnedSaber;
-        private readonly PluginMetadata _metaData;
         private readonly TimeTweeningManager _tweeningManager;
 
         private Editor(
@@ -65,11 +64,9 @@ namespace SaberFactory.Editor
             SaberGrabController saberGrabController,
             MenuSaberProvider menuSaberProvider,
             PluginDirectories pluginDirs,
-            [Inject(Id = nameof(SaberFactory))]PluginMetadata metadata,
             TimeTweeningManager tweeningManager)
         {
             _logger = logger;
-            _metaData = metadata;
             _tweeningManager = tweeningManager;
             _pluginConfig = pluginConfig;
             _baseUiComposition = baseUiComposition;
@@ -101,10 +98,6 @@ namespace SaberFactory.Editor
             // Create Pedestal
             var pos = new Vector3(0.3f, 0, 0.9f);
             await _pedestal.Instantiate(pos, Quaternion.Euler(0, 25, 0));
-            SetPedestalText(1, "<color=#ffffff70>SF v"+_metaData.HVersion+"</color>");
-#if PAT
-            SetPedestalText(2, "<color=#ffffff80>Patreon ♥</color>");
-#endif
         }
 
         public async void Open()
@@ -166,26 +159,6 @@ namespace SaberFactory.Editor
             _menuSaberProvider.RequestSaberVisiblity(true);
         }
 
-        public void SetPedestalText(int line, string text)
-        {
-            _pedestal.SetText(line, text);
-        }
-
-        public void FlashPedestal(Color color)
-        {
-            _tweeningManager.KillAllTweens(_pedestal.SaberContainerTransform);
-            
-            _tweeningManager.AddTween(new FloatTween(1, 0, f =>
-            {
-                _pedestal.SetLedColor(color.ColorWithAlpha(f));
-            }, 1, EaseType.InCubic), _pedestal.SaberContainerTransform);
-
-            _pedestal.InitSpiral();
-            _tweeningManager.AddTween(new FloatTween(-1, 1, f =>
-            {
-                _pedestal.SetSpiralLength(f);
-            }, 1, EaseType.OutCubic), _pedestal.SaberContainerTransform);
-        }
 
         private async void OnModelCompositionSet(ModelComposition composition)
         {

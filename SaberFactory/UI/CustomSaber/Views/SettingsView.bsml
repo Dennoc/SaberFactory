@@ -11,30 +11,34 @@
                       hover-hint='Enable events on the saber (like fc effects)'/>
             <checkbox text='Random Sabers' value='random-sabers' apply-on-change='true'
                       hover-hint='Choose a random saber on every song start'/>
-            <checkbox text='Override song saber' value='override-song-saber' apply-on-change='true'
-                      hover-hint='Use your own saber instead of the one dictated by the song'/>
-			<slider-setting text='Swing Sound Vol' value='SwingSoundVolume' apply-on-change='true' min='0' max='5'/>
-            <checkbox-setting text='Custom Burnmarks' value='EnableCustomBurnmarks' apply-on-change='true'/>
             <text text='More settings in "Beat Saber\UserData\Saber Factory.json"' align='Center' font-color='#ffffff60'></text>
         </vertical>
 
 
         <horizontal bg='panel-top' skew='0' bg-color='#00b6ff20' pad='2'>
-            <sui.icon-button
+			<sui.icon-button
                     pad='1'
                     pref-width='15'
                     preferred-height='15'
                     on-click='profile-clicked'
                     icon='SaberFactory.Resources.Icons.profile.png'
-                    hover-hint='Support me on Ko-Fi'
+                    hover-hint='Original Author ToniMacaroni'
                     skew='0' show-line='false' normal-color='#00000000' hovered-color='#00b6ff40' use-gradient='false'/>
-            <sui.icon-button
+			<sui.icon-button
                     pad='1'
                     pref-width='15'
                     preferred-height='15'
                     on-click='discord-clicked'
-                    icon='SaberFactory.Resources.Icons.discord.png'
-                    hover-hint='Join our lovely server for help with the mod'
+                    icon='SaberFactory.Resources.Icons.SFSaber_Icon.png'
+                    hover-hint='Original Saber Factory Github'
+                    skew='0' show-line='false' normal-color='#00000000' hovered-color='#00b6ff40' use-gradient='false'/>
+			<sui.icon-button
+                    pad='1'
+                    pref-width='15'
+                    preferred-height='15'
+                    on-click='profiletwo-clicked'
+                    icon='SaberFactory.Resources.Icons.profile_two.png'
+                    hover-hint='Fork Maintainer Denno'
                     skew='0' show-line='false' normal-color='#00000000' hovered-color='#00b6ff40' use-gradient='false'/>
             <sui.icon-button
                     id='github-button'
