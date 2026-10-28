@@ -26,14 +26,10 @@ namespace SaberFactory.UI.CustomSaber.CustomComponents
             {
                 content.Add(new ListItem(listItem, listItem.ListName, listItem.ListAuthor, listItem.ListCover));
             }
-
-            #if V_1_29_1
-            _customList.data = content;
-            _customList.tableView.ReloadData();
-            #else
+            
             _customList.Data = content;
             _customList.TableView.ReloadData();
-            #endif
+            
 
         }
 

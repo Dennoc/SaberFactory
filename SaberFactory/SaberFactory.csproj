@@ -6,8 +6,7 @@
     <!--example SET <BS_DEFINE>V_1_40_8</BS_DEFINE> in your .csrpoj.user if using 1.40.8-->
   </PropertyGroup>
   <PropertyGroup>
-    <TargetFramework Condition="'$(BS_DEFINE)' == 'V_1_29_1'">netstandard2.0</TargetFramework>
-    <TargetFramework Condition="'$(BS_DEFINE)' != 'V_1_29_1'">netstandard2.1</TargetFramework>
+      <TargetFramework>netstandard2.1</TargetFramework>
     <OutputType>Library</OutputType>
     <LangVersion>8.0</LangVersion>
     <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
@@ -256,7 +255,8 @@
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
     <EmbeddedResource Include="Resources\CustomSaberComponents.dll" />
-    <EmbeddedResource Condition="'$(BS_DEFINE)' != 'V_1_29_1'" Include="Resources\assets" />
+      <EmbeddedResource Include="Resources\assets" />
+      <EmbeddedResource Include="Resources\pedestal" />
     <EmbeddedResource Include="Resources\Icons\folder.png" />
     <EmbeddedResource Include="Resources\Icons\transform-icon.png" />
     <EmbeddedResource Include="Resources\UI\border.png" />
@@ -265,16 +265,6 @@
     <None Remove="Serialization\MeshRendererModifierView.bsml" />
     <None Remove="UI\CustomSaber\CustomSaberUiComposition.css" />
     <EmbeddedResource Include="UI\CustomSaber\BaseUiComposition.css" />
-    <None Remove="UI\PatreonView.bsml" />
-    <EmbeddedResource Include="UI\PatreonView.bsml" />
-    <None Remove="Resources\UI\patreon-medium-button.png" />
-    <EmbeddedResource Include="Resources\UI\patreon-button.png" />
-    <None Remove="Resources\assets.old" />
-    <EmbeddedResource Condition="'$(BS_DEFINE)' == 'V_1_29_1'" Include="Resources\assets.old" />
-    <None Remove="Resources\pedestal" />
-    <EmbeddedResource Condition="'$(BS_DEFINE)' != 'V_1_29_1'" Include="Resources\pedestal" />
-    <None Remove="Resources\pedestal.old" />
-    <EmbeddedResource Condition="'$(BS_DEFINE)' == 'V_1_29_1'" Include="Resources\pedestal.old" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />

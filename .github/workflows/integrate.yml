@@ -27,9 +27,6 @@ jobs:
                 game-version: 1.40.8
                 additional-deps: '{"Heck":"^1.8.2", "SiraUtil":"^3.1.14", "BeatSaberMarkupLanguage":"^1.12.4"}'
             
-              - bs-define: V_1_39_1
-                game-version: 1.39.1
-                additional-deps: '{"Heck":"^1.8.2", "SiraUtil":"^3.1.14", "BeatSaberMarkupLanguage":"^1.12.4"}'
             
     
     env:
